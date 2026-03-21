@@ -18,6 +18,21 @@ export type WorkerProfile = {
   phone: string;
   createdAt: string;
   workHistory: WorkHistoryEntry[];
+  // Optional real Aadhaar fields (populated after KYC verification)
+  dob?: string;
+  gender?: string;
+  careOf?: string;
+  photo?: string;
+  address?: {
+    house?: string;
+    street?: string;
+    locality?: string;
+    city?: string;
+    district?: string;
+    state?: string;
+    pincode?: string;
+    country?: string;
+  };
 };
 
 export type WorkHistoryEntry = {

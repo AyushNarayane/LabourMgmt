@@ -4,6 +4,7 @@ import "./globals.css";
 import BottomNav from "@/components/BottomNav";
 import { LangProvider } from "@/components/LangProvider";
 import GoogleTranslate from "@/components/GoogleTranslate";
+import { UserProvider } from "@/components/UserProvider";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -24,9 +25,11 @@ export default function RootLayout({
     <html lang="en" className={`${inter.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col font-sans">
         <LangProvider>
-          <GoogleTranslate />
-          {children}
-          <BottomNav />
+          <UserProvider>
+            <GoogleTranslate />
+            {children}
+            <BottomNav />
+          </UserProvider>
         </LangProvider>
       </body>
     </html>

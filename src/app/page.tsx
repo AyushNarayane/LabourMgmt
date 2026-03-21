@@ -5,10 +5,13 @@ import { Star, ShieldCheck, MapPin, IndianRupee, Briefcase, ChevronRight, FileCh
 import { mockWorker, mockJobs, mockSchemes, Job } from "@/lib/mockData";
 import Link from "next/link";
 import { useLang } from "@/components/LangProvider";
+import { useUser } from "@/components/UserProvider";
 
 export default function Home() {
   const [jobs, setJobs] = useState<Job[]>(mockJobs);
-  const worker = mockWorker;
+  const { user: loggedInUser } = useUser();
+  // Use real logged-in user data; fall back to mockWorker for demo if not logged in
+  const worker = loggedInUser ?? mockWorker;
   const { t } = useLang();
 
   const handleAcceptJob = (jobId: string) => {
@@ -33,16 +36,33 @@ export default function Home() {
         {/* Digital Labour Card */}
         <section>
           <div className="bg-white rounded-2xl shadow-[0_12px_32px_rgba(26,35,126,0.08)] p-6 relative">
-            <div className="flex justify-between items-start mb-6">
+            <div className="flex justify-between items-start mb-4">
               <div className="flex gap-4 items-center">
-                <div className="w-16 h-16 rounded-full bg-[#f3f3f5] flex items-center justify-center overflow-hidden border-2 border-[#1A237E]/20">
-                  <UserRound className="w-8 h-8 text-[#1A237E]" />
+                {/* Real Aadhaar photo or fallback icon */}
+                <div className="w-16 h-16 rounded-full bg-[#f3f3f5] flex items-center justify-center overflow-hidden border-2 border-[#1A237E]/20 shrink-0">
+                  {worker.photo ? (
+                    <img
+                      src={`data:image/jpeg;base64,${worker.photo}`}
+                      alt={worker.name}
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <UserRound className="w-8 h-8 text-[#1A237E]" />
+                  )}
                 </div>
                 <div>
                   <h2 className="text-xl font-bold text-[#1A237E]">{worker.name}</h2>
                   <p className="text-[#454652] font-medium text-sm flex items-center gap-1">
                     {t(worker.role)} <span className="text-[#c6c5d4]">•</span> {worker.location}
                   </p>
+                  {/* DOB and Gender from Aadhaar */}
+                  {(worker.dob || worker.gender) && (
+                    <p className="text-xs text-[#767683] mt-0.5">
+                      {worker.dob && <span>DOB: {worker.dob}</span>}
+                      {worker.dob && worker.gender && <span className="mx-1">·</span>}
+                      {worker.gender && <span>{worker.gender === "M" ? "Male" : worker.gender === "F" ? "Female" : "Other"}</span>}
+                    </p>
+                  )}
                   <div className="flex items-center gap-1 mt-1 text-sm font-semibold text-amber-500">
                     <Star className="w-4 h-4 fill-amber-500" />
                     <span>{worker.rating}</span>
@@ -58,6 +78,22 @@ export default function Home() {
               </div>
             </div>
 
+            {/* Full Aadhaar Address */}
+            {worker.address && (
+              <div className="mb-3 bg-[#f7f7fb] rounded-xl px-4 py-2.5 text-xs text-[#454652] leading-relaxed border border-[#eeeef0]">
+                <span className="font-semibold text-[#1A237E]">Address: </span>
+                {[
+                  worker.address.house,
+                  worker.address.street,
+                  worker.address.locality,
+                  worker.address.city,
+                  worker.address.district,
+                  worker.address.state,
+                  worker.address.pincode,
+                ].filter(Boolean).join(", ")}
+              </div>
+            )}
+
             {worker.isAadhaarVerified && (
               <div className="flex items-center gap-3 bg-[#a0f399]/20 text-[#005312] p-3 rounded-xl border border-[#a0f399]">
                 <div className="bg-[#1B6D24] rounded-full p-1 shadow-sm">
@@ -68,6 +104,7 @@ export default function Home() {
                   <p className="text-sm font-medium">{t("aadhaar_linked")}</p>
                 </div>
               </div>
+
             )}
           </div>
         </section>
