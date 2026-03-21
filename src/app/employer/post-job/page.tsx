@@ -40,6 +40,7 @@ export default function PostJobPage() {
   } | null>(null);
 
   const [acknowledged, setAcknowledged] = useState(false);
+  const [agreed, setAgreed] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -258,10 +259,48 @@ export default function PostJobPage() {
             )}
           </div>
 
+          {/* Fair Employment Agreement (T&C) */}
+          <div className="bg-[#000666]/5 rounded-2xl border border-[#000666]/10 p-6 space-y-4">
+            <div className="flex items-center gap-2 text-[#000666]">
+              <ShieldCheck className="w-5 h-5" />
+              <h3 className="font-bold">Fair Employment Agreement</h3>
+            </div>
+            
+            <div className="space-y-3">
+              <label className="flex items-start gap-3 cursor-pointer group">
+                <div className="relative flex items-center mt-0.5">
+                   <input
+                     type="checkbox" required
+                     checked={agreed}
+                     onChange={(e) => setAgreed(e.target.checked)}
+                     className="w-5 h-5 rounded-md border-2 border-[#000666]/20 text-[#000666] focus:ring-[#000666] transition-all cursor-pointer accent-[#000666]"
+                   />
+                </div>
+                <div className="flex-1">
+                   <p className="text-sm font-bold text-[#1a1c1d] group-hover:text-[#000666] transition-colors">I agree to the Fair Workforce Commitment</p>
+                   <div className="mt-2 space-y-1.5 pl-0.5">
+                      <p className="text-[11px] text-[#454652] flex items-center gap-2 italic">
+                        <span className="w-1 h-1 bg-[#000666]/40 rounded-full"></span> 
+                        Prompt payment upon task completion.
+                      </p>
+                      <p className="text-[11px] text-[#454652] flex items-center gap-2 italic">
+                        <span className="w-1 h-1 bg-[#000666]/40 rounded-full"></span> 
+                        Provision of necessary safety gear & hydration.
+                      </p>
+                      <p className="text-[11px] text-[#454652] flex items-center gap-2 italic">
+                        <span className="w-1 h-1 bg-[#000666]/40 rounded-full"></span> 
+                        No discrimination or harassment of workers.
+                      </p>
+                   </div>
+                </div>
+              </label>
+            </div>
+          </div>
+
           {/* Submit */}
           <button
             type="submit"
-            disabled={!form.title || !form.skill || !form.state || !form.wagePerDay || !form.durationDays || (wageFeedback !== null && !wageFeedback.isFair && !acknowledged) || isSubmitting}
+            disabled={!form.title || !form.skill || !form.state || !form.wagePerDay || !form.durationDays || !agreed || (wageFeedback !== null && !wageFeedback.isFair && !acknowledged) || isSubmitting}
             className="w-full bg-gradient-to-r from-[#000666] to-[#1A237E] text-white py-4 rounded-xl font-bold text-lg shadow-lg active:scale-95 transition-transform disabled:opacity-40"
           >
             {isSubmitting ? "Posting..." : "Post Job"}
