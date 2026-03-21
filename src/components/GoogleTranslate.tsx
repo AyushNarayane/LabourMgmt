@@ -86,9 +86,14 @@ export default function GoogleTranslate() {
         
         {/* CSS rules to forcefully neutralize Google's structural injections */}
         <style dangerouslySetInnerHTML={{__html: `
-          body { top: 0px !important; position: static !important; }
-          .skiptranslate.goog-te-banner-frame { display: none !important; }
+          body { top: 0px !important; position: static !important; margin-top: 0px !important; padding-top: 0px !important; }
+          html { top: 0px !important; position: static !important; }
+          iframe.goog-te-banner-frame { display: none !important; }
+          .goog-te-banner-frame { display: none !important; }
           #goog-gt-tt { display: none !important; }
+          .goog-te-balloon-frame { display: none !important; }
+          .goog-te-menu-frame { display: none !important; }
+          .VIpgJd-ZVi9od-ORHb-OEVmcd { display: none !important; }
         `}} />
       </div>
     </>
