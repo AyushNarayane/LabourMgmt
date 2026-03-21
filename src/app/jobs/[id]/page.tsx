@@ -5,10 +5,13 @@ import { ArrowLeft, MapPin, IndianRupee, Briefcase, CalendarClock, Building2, Ch
 import { mockJobs } from "@/lib/mockData";
 import Link from "next/link";
 
+import { useLang } from "@/components/LangProvider";
+
 export default function JobDetailsPage({ params }: { params: Promise<{ id: string }> }) {
   const resolvedParams = use(params);
   const job = mockJobs.find(j => j.id === resolvedParams.id);
   const [accepted, setAccepted] = useState(false);
+  const { t } = useLang();
 
   if (!job) {
     return (
@@ -29,7 +32,7 @@ export default function JobDetailsPage({ params }: { params: Promise<{ id: strin
           <ArrowLeft className="w-5 h-5 text-white" />
         </Link>
         <div className="flex justify-between items-start">
-          <h1 className="text-2xl font-bold tracking-tight pr-4">{job.title}</h1>
+          <h1 className="text-2xl font-bold tracking-tight pr-4">{t(job.title)}</h1>
           <span className={`text-sm font-bold px-3 py-1.5 rounded-lg shrink-0 ${job.matchScore >= 80 ? 'bg-[#e0e0ff] text-[#000666]' : 'bg-white/20 text-white'}`}>
             {job.matchScore}% Match
           </span>
@@ -43,35 +46,35 @@ export default function JobDetailsPage({ params }: { params: Promise<{ id: strin
               <Building2 className="w-6 h-6 text-[#1A237E]" />
             </div>
             <div>
-              <p className="text-sm font-bold text-[#767683] uppercase tracking-wider mb-0.5">Employer</p>
+              <p className="text-sm font-bold text-[#767683] uppercase tracking-wider mb-0.5">{t("employer")}</p>
               <h3 className="text-lg font-bold text-[#1a1c1d]">{job.company}</h3>
             </div>
           </div>
 
           <div className="grid grid-cols-2 gap-y-6 gap-x-4 mb-2">
             <div>
-              <p className="text-xs font-bold text-[#767683] uppercase tracking-wider mb-1">Location</p>
+              <p className="text-xs font-bold text-[#767683] uppercase tracking-wider mb-1">{t("location")}</p>
               <div className="flex items-center gap-2 font-medium text-[#454652]">
                 <MapPin className="w-4 h-4 text-[#1A237E]" />
                 {job.location} ({job.distanceKm} km)
               </div>
             </div>
             <div>
-              <p className="text-xs font-bold text-[#767683] uppercase tracking-wider mb-1">Duration</p>
+              <p className="text-xs font-bold text-[#767683] uppercase tracking-wider mb-1">{t("duration")}</p>
               <div className="flex items-center gap-2 font-medium text-[#454652]">
                 <Briefcase className="w-4 h-4 text-[#1A237E]" />
                 {job.durationDays} Days
               </div>
             </div>
             <div>
-              <p className="text-xs font-bold text-[#767683] uppercase tracking-wider mb-1">Payment</p>
+              <p className="text-xs font-bold text-[#767683] uppercase tracking-wider mb-1">{t("payment")}</p>
               <div className="flex items-center gap-2 font-bold text-[#1B6D24] text-lg">
                 <IndianRupee className="w-5 h-5" />
                 {job.wagePerDay}/day
               </div>
             </div>
             <div>
-              <p className="text-xs font-bold text-[#767683] uppercase tracking-wider mb-1">Start Date</p>
+              <p className="text-xs font-bold text-[#767683] uppercase tracking-wider mb-1">{t("start_date")}</p>
               <div className="flex items-center gap-2 font-medium text-[#454652]">
                 <CalendarClock className="w-4 h-4 text-[#1A237E]" />
                 {job.startDate}
@@ -92,20 +95,20 @@ export default function JobDetailsPage({ params }: { params: Promise<{ id: strin
           }
           <p className={`text-sm font-bold ${job.wageFairnessStatus === 'verified' ? 'text-[#005312]' : 'text-[#93000a]'}`}>
             {job.wageFairnessStatus === 'verified'
-              ? 'Wage verified — meets state minimum wage'
-              : 'Warning: Below legal minimum wage'}
+              ? t("wage_verified_msg")
+              : t("wage_warning_msg")}
           </p>
         </div>
 
         <div className="bg-white rounded-2xl shadow-[0_4px_16px_rgba(0,0,0,0.04)] border border-[#eeeef0] p-6">
-          <h3 className="text-lg font-bold text-[#1a1c1d] mb-3">Job Description</h3>
+          <h3 className="text-lg font-bold text-[#1a1c1d] mb-3">{t("job_description")}</h3>
           <p className="text-[#454652] leading-relaxed">{job.description}</p>
           
           <div className="mt-5">
-            <p className="text-xs font-bold text-[#767683] uppercase tracking-wider mb-2">Skills Required</p>
+            <p className="text-xs font-bold text-[#767683] uppercase tracking-wider mb-2">{t("skills_required")}</p>
             <div className="flex flex-wrap gap-2">
               {job.skillsRequired.map(s => (
-                <span key={s} className="bg-[#e0e0ff] text-[#000666] text-xs font-bold px-3 py-1.5 rounded-lg">{s}</span>
+                <span key={s} className="bg-[#e0e0ff] text-[#000666] text-xs font-bold px-3 py-1.5 rounded-lg">{t(s)}</span>
               ))}
             </div>
           </div>
@@ -118,12 +121,12 @@ export default function JobDetailsPage({ params }: { params: Promise<{ id: strin
             onClick={() => setAccepted(true)}
             className="w-full bg-gradient-to-r from-[#000666] to-[#1A237E] text-white py-4 rounded-xl font-bold shadow-[0_4px_12px_rgba(26,35,126,0.2)] text-lg hover:shadow-lg transition-transform active:scale-95"
           >
-            Accept Job Offer
+            {t("accept_job_offer")}
           </button>
         ) : (
           <button disabled className="w-full bg-[#a0f399]/30 text-[#005312] py-4 rounded-xl font-bold text-lg flex items-center justify-center gap-2 border border-[#a0f399]">
             <CheckCircle2 className="w-5 h-5" />
-            Job Accepted — You will be notified
+            {t("job_accepted_msg")}
           </button>
         )}
       </div>

@@ -41,7 +41,7 @@ export default function Home() {
                 <div>
                   <h2 className="text-xl font-bold text-[#1A237E]">{worker.name}</h2>
                   <p className="text-[#454652] font-medium text-sm flex items-center gap-1">
-                    {worker.role} <span className="text-[#c6c5d4]">•</span> {worker.location}
+                    {t(worker.role)} <span className="text-[#c6c5d4]">•</span> {worker.location}
                   </p>
                   <div className="flex items-center gap-1 mt-1 text-sm font-semibold text-amber-500">
                     <Star className="w-4 h-4 fill-amber-500" />
@@ -82,7 +82,7 @@ export default function Home() {
             {jobs.map((job) => (
               <div key={job.id} className="min-w-[260px] max-w-[260px] bg-white rounded-xl shadow-[0_4px_16px_rgba(0,0,0,0.04)] p-5 snap-start border border-[#eeeef0] flex flex-col">
                 <div className="flex justify-between items-start mb-2">
-                  <h4 className="font-bold text-[#1a1c1d] break-words flex-1 pr-2 leading-tight">{job.title}</h4>
+                  <h4 className="font-bold text-[#1a1c1d] break-words flex-1 pr-2 leading-tight">{t(job.title)}</h4>
                   <span className={`text-xs font-bold px-2 py-1 rounded-md ml-auto shrink-0 ${job.matchScore >= 80 ? 'bg-[#e0e0ff] text-[#000666]' : 'bg-[#f0f0f2] text-[#454652]'}`}>
                     {job.matchScore}% {t("match")}
                   </span>
@@ -141,8 +141,8 @@ export default function Home() {
                   <FileCheck2 className="w-6 h-6 text-[#93000a]" />
                 </div>
                 <div className="flex-1 min-w-0 pr-2">
-                  <h4 className="font-bold text-[#1a1c1d] truncate">{scheme.title}</h4>
-                  <p className="text-sm text-[#454652] font-medium mt-0.5 truncate">{scheme.benefit}</p>
+                  <h4 className="font-bold text-[#1a1c1d] truncate">{t(scheme.title)}</h4>
+                  <p className="text-sm text-[#454652] font-medium mt-0.5 truncate">{t(scheme.benefit)}</p>
                   {scheme.isEligible && (
                     <div className="inline-block mt-2 bg-[#f0f0f2] text-[#454652] text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded">
                       {t("eligible")}

@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import BottomNav from "@/components/BottomNav";
-import { LangProvider, LangToggle } from "@/components/LangProvider";
+import { LangProvider } from "@/components/LangProvider";
+import GoogleTranslate from "@/components/GoogleTranslate";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -23,7 +24,7 @@ export default function RootLayout({
     <html lang="en" className={`${inter.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col font-sans">
         <LangProvider>
-          <LangToggle />
+          <GoogleTranslate />
           {children}
           <BottomNav />
         </LangProvider>

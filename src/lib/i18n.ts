@@ -1,99 +1,86 @@
-// Translations for the Shramik Setu MVP
-// Supports English (en) and Hindi (hi)
-
-export type Language = "en" | "hi";
+// Translations for all 10 major Indian Languages
+export type Language = "en" | "hi" | "mr" | "gu" | "bn" | "ta" | "te" | "kn" | "ml" | "pa";
 
 type TranslationMap = {
-  [key: string]: { en: string; hi: string };
+  [key: string]: Partial<Record<Language, string>>;
 };
 
 export const translations: TranslationMap = {
   // App-level
-  app_name: { en: "Shramik Setu", hi: "श्रमिक सेतु" },
-  app_tagline: { en: "Your Digital Civic Identity", hi: "आपकी डिजिटल नागरिक पहचान" },
+  app_name: { en: "Shramik Setu", hi: "श्रमिक सेतु", mr: "श्रमिक सेतू", gu: "શ્રમિક સેતુ", bn: "শ্রমিক সেতু", ta: "ஷ்ரமிக் சேது", te: "శ్రమిక్ సేతు", kn: "ಶ್ರಮಿಕ್ ಸೇತು", ml: "ശ്രമിക് സേതു", pa: "ਸ਼੍ਰਮਿਕ ਸੇਤੂ" },
+  app_tagline: { en: "Your Digital Civic Identity", hi: "आपकी डिजिटल नागरिक पहचान", mr: "तुमची डिजिटल नागरी ओळख", gu: "તમારી ડિજિટલ નાગરિક ઓળખ", bn: "আপনার ডিজিটাল নাগরিক পরিচয়", ta: "உங்கள் டிஜிட்டல் அடையாள அட்டை", te: "మీ డిజిటల్ పౌర గుర్తింపు", kn: "ನಿಮ್ಮ ಡಿಜಿಟಲ್ ನಾಗರಿಕ ಗುರುತು", ml: "നിങ്ങളുടെ സ്മാർട്ട് ഐഡന്റിറ്റി", pa: "ਤੁਹਾਡੀ ਡਿਜੀਟਲ ਪਛਾਣ" },
 
-  // Navigation
-  nav_home: { en: "Home", hi: "होम" },
-  nav_card: { en: "Card", hi: "कार्ड" },
-  nav_jobs: { en: "Jobs", hi: "नौकरी" },
-  nav_schemes: { en: "Schemes", hi: "योजनाएं" },
-  nav_profile: { en: "Profile", hi: "प्रोफ़ाइल" },
+  // Dashboard / Cards
+  matched_jobs: { en: "Matched Jobs", hi: "मिलती जुलती नौकरियां", mr: "मिळत्याजुळत्या नोकऱ्या", gu: "મેળ ખાતી નોકરીઓ", bn: "মিলে যাওয়া চাকরি", ta: "பொருத்தமான வேலைகள்", te: "సరిపోలిన ఉద్యోగాలు", kn: "ಹೊಂದಾಣಿಕೆಯ ಉದ್ಯೋಗಗಳು", ml: "അനുയോജ്യമായ ജോലികൾ", pa: "ਮਿਲਦੀਆਂ ਨੌਕਰੀਆਂ" },
+  government_benefits: { en: "Government Benefits", hi: "सरकारी लाभ", mr: "सरकारी लाभ", gu: "સરકારી લાભો", bn: "সরকারি সুবিধা", ta: "அரசு சலுகைகள்", te: "ప్రభుత్వ ప్రయోజనాలు", kn: "ಸರ್ಕಾರಿ ಸೌಲಭ್ಯಗಳು", ml: "സർക്കാർ ആനുകൂല്യങ്ങൾ", pa: "ਸਰਕਾਰੀ ਲਾਭ" },
+  verified_identity: { en: "Verified Identity", hi: "सत्यापित पहचान", mr: "सत्यापित ओळख", gu: "ચકાસાયેલ ઓળખ", bn: "যাচাইকৃত পরিচয়", ta: "சரிபார்க்கப்பட்ட அடையாளம்", te: "ధృవీకరించబడిన గుర్తింపు", kn: "ಪರಿಶೀಲಿಸಿದ ಗುರುತು", ml: "സ്ഥിരീകരിച്ച ഐഡന്റിറ്റി", pa: "ਪ੍ਰਮਾਣਿਤ ਪਛਾਣ" },
+  aadhaar_linked: { en: "Aadhaar Linked", hi: "आधार जुड़ा हुआ", mr: "आधार जोडलेले", gu: "આધાર લિંક કરેલ", bn: "আধার যুক্ত", ta: "ஆதார் இணைக்கப்பட்டது", te: "ఆధార్ లింక్ చేయబడింది", kn: "ಆಧಾರ್ ಲಿಂಕ್ ಮಾಡಲಾಗಿದೆ", ml: "ആധാർ ബന്ധിപ്പിച്ചു", pa: "ਆਧਾਰ ਲਿੰਕ ਕੀਤਾ" },
+  
+  // Job Actions
+  view_all: { en: "View All", hi: "सभी देखें", mr: "सर्व पहा", gu: "બધું જુઓ", bn: "সব দেখুন", ta: "அனைத்தையும் காண்", te: "అన్నీ చూడండి", kn: "ಎಲ್ಲವನ್ನೂ ವೀಕ್ಷಿಸಿ", ml: "എല്ലാം കാണുക", pa: "ਸਭ ਦੇਖੋ" },
+  accept_job: { en: "Accept Job", hi: "नौकरी स्वीकार करें", mr: "नोकरी स्वीकारा", gu: "નોકરી સ્વીકારો", bn: "চাকরি গ্রহণ করুন", ta: "வேலையை ஏற்றுக்கொள்", te: "ఉద్యోగాన్ని అంగీకరించు", kn: "ಉದ್ಯೋಗ ಒಪ್ಪಿಕೊಳ್ಳಿ", ml: "ജോലി സ്വീകരിക്കുക", pa: "ਨੌਕਰੀ ਸਵੀਕਾਰ ਕਰੋ" },
+  review_details: { en: "Review Details", hi: "विवरण देखें", mr: "तपशील पहा", gu: "વિગતો જુઓ", bn: "বিশদ পর্যালোচনা", ta: "விவரங்களை சரிபார்", te: "వివరాలను సమీక్షించండి", kn: "ವಿವರಗಳನ್ನು ಪರಿಶೀಲಿಸಿ", ml: "വിവരങ്ങൾ അവലോകനം ചെയ്യുക", pa: "ਵੇਰਵੇ ਦੇਖੋ" },
+  accepted: { en: "Accepted", hi: "स्वीकृत", mr: "स्वीकारले", gu: "સ્વીકાર્યું", bn: "গৃহীত", ta: "ஏற்கப்பட்டது", te: "అంగీకరించబడింది", kn: "ಸ್ವೀಕರಿಸಲಾಗಿದೆ", ml: "സ്വീകരിച്ചു", pa: "ਸਵੀਕਾਰ ਕੀਤਾ" },
+  eligible: { en: "Eligible", hi: "पात्र", mr: "पात्र", gu: "લાયક", bn: "যোগ্য", ta: "தகுதியானவர்", te: "అర్హత", kn: "ಅರ್ಹ", ml: "യോഗ്യനാണ്", pa: "ਯੋਗ" },
+  apply: { en: "Apply", hi: "आवेदन करें", mr: "अर्ज करा", gu: "અરજી કરો", bn: "আবেদন করুন", ta: "விண்ணப்பிக்கவும்", te: "దరఖాస్తు చేయండి", kn: "ಅರ್ಜಿ ಸಲ್ಲಿಸಿ", ml: "അപേക്ഷിക്കുക", pa: "ਲਾਗੂ ਕਰੋ" },
 
-  // Dashboard
-  matched_jobs: { en: "Matched Jobs", hi: "मिलती जुलती नौकरियां" },
-  government_benefits: { en: "Government Benefits", hi: "सरकारी लाभ" },
-  view_all: { en: "View All", hi: "सभी देखें" },
-  accept_job: { en: "Accept Job", hi: "नौकरी स्वीकार करें" },
-  review_details: { en: "Review Details", hi: "विवरण देखें" },
-  accepted: { en: "Accepted", hi: "स्वीकृत" },
-  eligible: { en: "Eligible", hi: "पात्र" },
-  apply: { en: "Apply", hi: "आवेदन करें" },
-  km_away: { en: "km away", hi: "किमी दूर" },
-  days_req: { en: "Days req.", hi: "दिन आवश्यक" },
-  per_day: { en: "/ day", hi: "/ दिन" },
-  match: { en: "Match", hi: "मैच" },
+  // Metrics
+  km_away: { en: "km away", hi: "किमी दूर", mr: "किमी दूर", gu: "કિમી દૂર", bn: "কিমি দূরে", ta: "கி.மீ தூரம்", te: "కి.మీ దూరం", kn: "ಕಿ.ಮೀ. ದೂರದಲ್ಲಿ", ml: "കി.മീ അകലെ", pa: "ਕਿਲੋਮੀਟਰ ਦੂਰ" },
+  days_req: { en: "Days req.", hi: "दिन आवश्यक", mr: "दिवस आवश्यक", gu: "દિવસ જરૂરી", bn: "দিন প্রয়োজন", ta: "நாட்கள் தேவையானது", te: "రోజులు అవసరం", kn: "ದಿನಗಳು ಅಗತ್ಯವಿದೆ", ml: "ദിവസങ്ങൾ ആവശ്യമാണ്", pa: "ਦਿਨ ਲੋੜੀਂਦੇ" },
+  per_day: { en: "/ day", hi: "/ दिन", mr: "/ दिवस", gu: "/ દિવસ", bn: "/ দিন", ta: "/ நாள்", te: "/ రోజు", kn: "/ ದಿನ", ml: "/ ദിവസം", pa: "/ ਦਿਨ" },
+  match: { en: "Match", hi: "मैच", mr: "साम्य", gu: "મેચ", bn: "মিল", ta: "பொருத்தம்", te: "మ్యాచ్", kn: "ಹೊಂದಾಣಿಕೆ", ml: "പൊരുത്തം", pa: "ਮੈਚ" },
 
-  // Digital Card
-  digital_labour_card: { en: "Digital Labour Card", hi: "डिजिटल श्रमिक कार्ड" },
-  portable_identity: { en: "Your portable worker identity", hi: "आपकी पोर्टेबल कामगार पहचान" },
-  verified_identity: { en: "Verified Identity", hi: "सत्यापित पहचान" },
-  aadhaar_linked: { en: "Aadhaar Linked", hi: "आधार जुड़ा हुआ" },
-  role: { en: "Role", hi: "भूमिका" },
-  location: { en: "Location", hi: "स्थान" },
-  rating: { en: "Rating", hi: "रेटिंग" },
-  member_since: { en: "Member Since", hi: "सदस्य तिथि" },
-  skills: { en: "Skills", hi: "कौशल" },
-  languages: { en: "Languages", hi: "भाषाएं" },
-  work_history: { en: "Work History", hi: "कार्य इतिहास" },
-  share: { en: "Share", hi: "शेयर करें" },
-  phone: { en: "Phone", hi: "फ़ोन" },
+  // Exact Mock Data Values Translations
+  "Mason": { en: "Mason", hi: "राजमिस्त्री", mr: "राजमिस्त्री", gu: "કડિયાકામ", bn: "রাজমিস্ত্রি", ta: "கொத்தனார்", te: "మేస్త్రీ", kn: "ಗೌಂಡಿ", ml: "കല്ലാശാരി", pa: "ਰਾਜਮਿਸਤਰੀ" },
+  "Residential Mason": { en: "Residential Mason", hi: "राजमिस्त्री", mr: "राजमिस्त्री", gu: "રહેણાંક કડિયાકામ", bn: "রাজমিস্ত্রি", ta: "கொத்தனார்", te: "మేస్త్రీ", kn: "ಗೌಂಡಿ", ml: "കല്ലാശാരി", pa: "ਰਾਜਮਿਸਤਰੀ" },
+  "Block Layer": { en: "Block Layer", hi: "ईंट जोड़ने वाला", mr: "विटा रचणारा", gu: "ઇંટો મૂકનાર", bn: "ইট গাঁথনি", ta: "செங்கல் அடுக்குபவர்", te: "ఇటుక వేసేవాడు", kn: "ಇಟ್ಟಿಗೆ ಹಾಕುವವನು", ml: "ഇഷ്ടിക പണിക്കാരൻ", pa: "ਇੱਟਾਂ ਜੋੜਨ ਵਾਲਾ" },
+  "Senior Plastering Mason": { en: "Senior Plastering Mason", hi: "सीनियर प्लास्टर मिस्त्री", mr: "वरिष्ठ प्लास्टर कारागीर", gu: "વરિષ્ઠ પ્લાસ્ટર કડિયા", bn: "সিনিয়র প্লাস্টার মিস্ত্রি", ta: "மூத்த பிளாஸ்டரிங் மேசன்", te: "సీనియర్ ప్లాస్టర్ మేస్త్రీ", kn: "ಹಿರಿಯ ಪ್ಲಾಸ್ಟರ್ ಮೇಸ್ತ್ರಿ", ml: "സീനിയർ പ്ലാസ്റ്റർ മിസ്ത്രി", pa: "ਸੀਨੀਅਰ ਪਲਾਸਟਰ ਮਿਸਤਰੀ" },
+  "e-Shram Portal": { en: "e-Shram Portal", hi: "ई-श्रम पोर्टल", mr: "ई-श्रम पोर्टल", gu: "ઈ-શ્રમ પોર્ટલ", bn: "ই-শ্রম পোর্টাল", ta: "இ-ஷ்ராம் போர்டல்", te: "ఈ-శ్రమ్ పోర్టల్", kn: "ಇ-ಶ್ರಮ್ ಪೋರ್ಟಲ್", ml: "ഇ-ശ്രമം പോർട്ടൽ", pa: "ਈ-ਸ਼੍ਰਮ ਪੋਰਟਲ" },
+  "₹2 Lakh Insurance Cover": { en: "₹2 Lakh Insurance Cover", hi: "₹2 लाख बीमा कवर", mr: "₹2 लाख विमा संरक्षण", gu: "₹2 લાખનું વીમા કવર", bn: "₹2 লাখ বীমা কভার", ta: "₹2 லட்சம் காப்பீடு", te: "₹2 లక్షల బీమా", kn: "₹2 ಲಕ್ಷ ವಿಮೆ", ml: "₹2 ലക്ഷം ഇൻഷുറൻസ്", pa: "₹2 ਲੱਖ ਬੀਮਾ" },
+  "BOCW Card": { en: "BOCW Card", hi: "निर्माण श्रमिक कार्ड", mr: "मजदूर कार्ड", gu: "મજૂર કાર્ડ", bn: "শ্রমিক কার্ড", ta: "தொழிலாளர் அட்டை", te: "కార్మిక కార్డు", kn: "ಕಾರ್ಮಿಕ ಕಾರ್ಡ್", ml: "തൊഴിലാളി കാർഡ്", pa: "ਮਜ਼ਦੂਰ ਕਾਰਡ" },
+  "Tool Purchase Grant ₹5,000": { en: "Tool Purchase Grant ₹5,000", hi: "उपकरण अनुदान ₹5,000", mr: "साधन अनुदान ₹5,000", gu: "સાધન સહાય ₹5,000", bn: "টুল অনুদান ₹5,000", ta: "கருவி மானியம் ₹5,000", te: "సాధన మంజూరు ₹5,000", kn: "ಉಪಕರಣ ಅನುದಾನ ₹5,000", ml: "ഉപകരണ ഗ്രാന്റ് ₹5,000", pa: "ਸਾਧਨ ਗ੍ਰਾਂਟ ₹5,000" },
+  "PM-SYM Pension": { en: "PM-SYM Pension", hi: "पीएम-एसवाईएम पेंशन", mr: "पीएम-एसवायएम पेन्शन", gu: "પીએમ-એસવાયએમ પેન્શન", bn: "পিএম-এসওয়াইএম পেনশন", ta: "பி.எம்-சிம் ஒய்வூதியம்", te: "పీఎం-సిమ్ పింఛను", kn: "ಪಿಎಂ-ಎಸ್ವೈಎಂ ಪಿಂಚಣಿ", ml: "പിഎം-സെം പെൻഷൻ", pa: "ਪੀਐਮ-ਐਸਵਾਈਐਮ ਪੈਨਸ਼ਨ" },
+  "₹3,000/month after age 60": { en: "₹3,000/month after age 60", hi: "60 की उम्र के बाद ₹3,000/महीना", mr: "60 वयानंतर ₹3,000/महिना", gu: "60 વર્ષ પછી ₹3,000/મહિનો", bn: "60 বছর পর ₹3,000/মাস", ta: "60 வயதுக்கு பிறகு ₹3,000/மாதம்", te: "60 ఏళ్ళ తర్వాత ₹3,000/నెల", kn: "60 ವರ್ಷಗಳ ನಂತರ ₹3,000/ತಿಂಗಳು", ml: "60 വയസ്സിന് ശേഷം ₹3,000/മാസം", pa: "60 ਸਾਲ ਬਾਅਦ ₹3,000/ਮਹੀਨਾ" },
+  "PMAY Housing": { en: "PMAY Housing", hi: "पीएमएवाई आवास", mr: "पीएमएवाय गृहनिर्माण", gu: "પીએમએવાય આવાસ", bn: "পিএমএওয়াই আবাসন", ta: "பி.எம்.ஏ.ஒய் வீடுகள்", te: "పీఎంఏవై ఇళ్ళు", kn: "ಪಿಎಂಎವೈ ವಸತಿ", ml: "പിഎംഎവൈ ഭവനം", pa: "ਪੀਐਮਏਵਾਈ ਹਾਊਸਿੰਗ" },
+  "Subsidy up to ₹2.67 Lakh": { en: "Subsidy up to ₹2.67 Lakh", hi: "₹2.67 लाख तक की सब्सिडी", mr: "₹2.67 लाखांपर्यंत सबसिडी", gu: "₹2.67 લાખ સુધીની સબસિડી", bn: "₹2.67 লক্ষ পর্যন্ত সাবসিডি", ta: "₹2.67 லட்சம் வரை மானியம்", te: "₹2.67 లక్షల వరకు సబ్సిడీ", kn: "₹2.67 ಲಕ್ಷ ವರೆಗೆ ಸಬ್ಸಿಡಿ", ml: "₹2.67 ലക്ഷം വരെ സബ്സിഡി", pa: "₹2.67 ਲੱਖ ਤੱਕ ਸਬਸਿਡੀ" },
+  "NSP Scholarships": { en: "NSP Scholarships", hi: "एनएसपी छात्रवृत्ति", mr: "एनएसपी शिष्यवृत्ती", gu: "એનએસપી સ્કોલરશિપ", bn: "এনএসপি স্কলারশিপ", ta: "என்.எஸ்.பி கல்வித்தொடர்பான உதவித்தொகை", te: "ఎన్ఎస్పీ స్కాలర్షిప్లు", kn: "ಎನ್ಎಸ್ಪಿ ವಿದ್ಯಾರ್ಥಿವೇತನಗಳು", ml: "എൻഎസ്പി സ്കോളർഷിപ്പുകൾ", pa: "ਐਨਐਸਪੀ ਸਕਾਲਰਸ਼ਿਪਸ" },
+  "Up to ₹10,000/year for children": { en: "Up to ₹10,000/year for children", hi: "बच्चों के लिए प्रति वर्ष ₹10,000 तक", mr: "मुलांसाठी वर्षाला ₹10,000 पर्यंत", gu: "બાળકો માટે વર્ષે ₹10,000 સુધી", bn: "শিশুদের জন্য বছরে ₹10,000 পর্যন্ত", ta: "குழந்தைகளுக்கு ஆண்டிற்கு ₹10,000 வரை", te: "పిల్లల కోసం సంవత్సరానికి ₹10,000 వరకు", kn: "ಮಕ್ಕಳಿಗೆ ವರ್ಷಕ್ಕೆ ₹10,000 ವರೆಗೆ", ml: "കുട്ടികൾക്ക് വർഷത്തിൽ ₹10,000 വരെ", pa: "ਬੱਚਿਆਂ ਲਈ ਸਾਲਾਨਾ ₹10,000 ਤੱਕ" },
 
-  // Schemes
-  government_schemes: { en: "Government Schemes", hi: "सरकारी योजनाएं" },
-  eligible_schemes: { en: "Eligible Schemes", hi: "पात्र योजनाएं" },
-  not_eligible: { en: "Not Eligible", hi: "अपात्र" },
-  you_are_eligible: { en: "You Are Eligible", hi: "आप पात्र हैं" },
-  apply_now: { en: "Apply Now", hi: "अभी आवेदन करें" },
-  requires_aadhaar: { en: "Requires Aadhaar", hi: "आधार आवश्यक" },
-  schemes_subtitle: { en: "Find and apply for benefits you are eligible for.", hi: "अपने लिए उपलब्ध लाभ खोजें और आवेदन करें।" },
-
-  // Employer
-  employer_dashboard: { en: "Employer Dashboard", hi: "नियोक्ता डैशबोर्ड" },
-  post_job: { en: "Post a New Job", hi: "नई नौकरी पोस्ट करें" },
-  find_workers: { en: "Find verified workers nearby", hi: "पास के सत्यापित कामगार खोजें" },
-  jobs_posted: { en: "Jobs Posted", hi: "पोस्ट की गई नौकरियां" },
-  workers_hired: { en: "Workers Hired", hi: "काम पर रखे गए कामगार" },
-  trust_score: { en: "Trust Score", hi: "भरोसा स्कोर" },
-  wage_flags: { en: "Wage Flags", hi: "वेतन चेतावनी" },
-  recent_postings: { en: "Your Recent Postings", hi: "आपकी हालिया पोस्टिंग" },
-
-  // Wage Fairness
-  wage_fairness_check: { en: "Wage & Fairness Check", hi: "वेतन और न्यायता जांच" },
-  daily_wage: { en: "Daily Wage", hi: "दैनिक मजदूरी" },
-  wage_verified: { en: "Wage verified — meets state minimum wage", hi: "वेतन सत्यापित — राज्य न्यूनतम वेतन पूरा करता है" },
-  wage_below: { en: "Warning: Below legal minimum wage", hi: "चेतावनी: कानूनी न्यूनतम वेतन से कम" },
-
-  // Registration
-  choose_role: { en: "Choose your role to get started", hi: "शुरू करने के लिए अपनी भूमिका चुनें" },
-  worker_labourer: { en: "Worker / Labourer", hi: "कामगार / मजदूर" },
-  employer_contractor: { en: "Employer / Contractor", hi: "नियोक्ता / ठेकेदार" },
-  complete_registration: { en: "Complete Registration", hi: "पंजीकरण पूरा करें" },
-
-  // Profile
-  jobs_done: { en: "Jobs Done", hi: "पूरी नौकरियां" },
-  personal_info: { en: "Personal Information", hi: "व्यक्तिगत जानकारी" },
+  // Auth & Registration
+  "verify_identity_login": { en: "Verify your identity to login", hi: "लॉगिन करने के लिए अपनी पहचान सत्यापित करें", mr: "लॉगिन करण्यासाठी तुमची ओळख सत्यापित करा", gu: "લૉગિન કરવા માટે તમારી ઓળખ ચકાસો", bn: "লগইন করতে আপনার পরিচয় যাচাই করুন", ta: "உள்நுழைய உங்கள் அடையாளத்தை சரிபார்க்கவும்", te: "లాగిన్ చేయడానికి మీ గుర్తింపును ధృవీకరించండి" },
+  "aadhaar_verification": { en: "Aadhaar Verification", hi: "आधार सत्यापन", mr: "आधार पडताळणी", gu: "આધાર ચકાસણી", bn: "আধার যাচাইকরণ", ta: "ஆதார் சரிபார்ப்பு", te: "ఆధార్ ధృవీకరణ" },
+  "aadhaar_number": { en: "Aadhaar Number", hi: "आधार नंबर", mr: "आधार क्रमांक", gu: "આધાર નંબર", bn: "আধার নম্বর", ta: "ஆதார் எண்", te: "ఆధార్ సంఖ్య" },
+  "send_otp": { en: "Send OTP", hi: "ओटीपी भेजें", mr: "OTP पाठवा", gu: "OTP મોકલો", bn: "ওটিপি পাঠান", ta: "OTP அனுப்பு", te: "OTP పంపండి" },
+  "enter_otp": { en: "Enter OTP", hi: "ओटीपी दर्ज करें", mr: "OTP प्रविष्ट करा", gu: "OTP દાખલ કરો", bn: "ওটিপি দিন", ta: "OTP ஐ உள்ளிடவும்", te: "OTP నమోదు చేయండి" },
+  "verify_login": { en: "Verify & Login", hi: "सत्यापित करें और लॉगिन करें", mr: "सत्यापित करा आणि लॉगिन करा", gu: "ચકાસો અને લૉગિન કરો", bn: "যাচাই করুন এবং লগইন করুন", ta: "சரிபார்த்து உள்நுழையவும்", te: "ధృవీకరించండి మరియు లాగిన్ చేయండి" },
+  "verify_aadhaar_short": { en: "Verify identity with Aadhaar", hi: "आधार के साथ पहचान सत्यापित करें", mr: "आधारसह ओळख सत्यापित करा", gu: "આધાર વડે ઓળખ ચકાસો", bn: "আধার দিয়ে পরিচয় যাচাই করুন", ta: "ஆதாருடன் அடையாளத்தை சரிபார்க்கவும்", te: "ఆధార్తో గుర్తింపును ధృవీకరించండి" },
+  "complete_profile": { en: "Complete your profile", hi: "अपनी प्रोफ़ाइल पूरी करें", mr: "तुमची प्रोफाइल पूर्ण करा", gu: "તમારી પ્રોફાઇલ પૂર્ણ કરો", bn: "আপনার প্রোফাইল সম্পূর্ণ করুন", ta: "உங்கள் சுயவிவரத்தை முடிக்கவும்", te: "మీ ప్రొఫైల్ పూర్తి చేయండి" },
+  "registration_complete": { en: "Registration complete!", hi: "पंजीकरण पूरा हुआ!", mr: "नोंदणी पूर्ण झाली!", gu: "નોંધણી પૂર્ણ થઈ!", bn: "নিবন্ধন সম্পূর্ণ!", ta: "பதிவு முடிந்தது!", te: "నమోదు పూర్తయింది!" },
+  "i_am_a": { en: "I am a...", hi: "मैं एक... हूं", mr: "मी एक... आहे", gu: "હું એક... છું", bn: "আমি একজন...", ta: "நான் ஒரு...", te: "నేను ఒక..." },
+  "choose_role": { en: "Choose your role to get started", hi: "शुरू करने के लिए अपनी भूमिका चुनें", mr: "सुरू करण्यासाठी तुमची भूमिका निवडा", gu: "પ્રારંભ કરવા માટે તમારી ભૂમિકા પસંદ કરો", bn: "শুরু করতে আপনার ভূমিকা চয়ন করুন" },
+  "worker_labourer": { en: "Worker / Labourer", hi: "श्रमिक / मजदूर", mr: "कामगार / मजूर", gu: "શ્રમિક / મજૂર", bn: "শ্রমিক / মজুর", ta: "தொழிலாளி", te: "కార్మికుడు" },
+  "employer_contractor": { en: "Employer / Contractor", hi: "नियोक्ता / ठेकेदार", mr: "नियोक्ता / कंत्राटदार", gu: "નોકરીદાતા / કોન્ટ્રાક્ટર", bn: "নিয়োগকর্তা / ঠিকাদার", ta: "பணியமர்த்துபவர்", te: "యజమాని / కాంట్రాక్టర్" },
+  "identity_verified": { en: "Identity Verified!", hi: "पहचान सत्यापित!", mr: "ओळख सत्यापित!", gu: "ઓળખ ચકાસાયેલ!", bn: "পরিচয় যাচাইকৃত!", ta: "அடையாளம் சரிபார்க்கப்பட்டது!", te: "గుర్తింపు ధృవీకరించబడింది!" },
+  "personal_info": { en: "Personal Info", hi: "व्यक्तिगत जानकारी", mr: "वैयक्तिक माहिती", gu: "વ્યક્તિગત માહિતી", bn: "ব্যক্তিগত তথ্য", ta: "தனிப்பட்ட தகவல்", te: "వ్యక్తిగత సమాచారం" },
+  "full_name": { en: "Full Name", hi: "पूरा नाम", mr: "पूर्ण नाव", gu: "પૂરું નામ", bn: "পুরো নাম", ta: "முழு பெயர்", te: "పూర్తి పేరు" },
+  "phone_number": { en: "Phone Number", hi: "फ़ोन नंबर", mr: "फोन नंबर", gu: "ફોન નંબર", bn: "ফোন নম্বর", ta: "தொலைபேசி எண்", te: "ఫోన్ నంబర్" },
+  "state": { en: "State", hi: "राज्य", mr: "राज्य", gu: "રાજ્ય", bn: "রাজ্য", ta: "மாநிலம்", te: "రాష్ట్రం" },
 
   // Job Details
-  employer_label: { en: "Employer", hi: "नियोक्ता" },
-  duration: { en: "Duration", hi: "अवधि" },
-  payment: { en: "Payment", hi: "भुगतान" },
-  start_date: { en: "Start Date", hi: "शुरू की तारीख" },
-  job_description: { en: "Job Description", hi: "नौकरी का विवरण" },
-  skills_required: { en: "Skills Required", hi: "आवश्यक कौशल" },
-  accept_job_offer: { en: "Accept Job Offer", hi: "नौकरी प्रस्ताव स्वीकार करें" },
-  job_accepted: { en: "Job Accepted — You will be notified", hi: "नौकरी स्वीकृत — आपको सूचित किया जाएगा" },
+  "employer": { en: "Employer", hi: "नियोक्ता", mr: "नियोक्ता", gu: "નોકરીદાતા", bn: "নিয়োগকর্তা", ta: "பணியமர்த்துபவர்", te: "యజమాని" },
+  "location": { en: "Location", hi: "स्थान", mr: "ठिकाण", gu: "સ્થાન", bn: "অবস্থান", ta: "இடம்", te: "స్థానం" },
+  "duration": { en: "Duration", hi: "अवधि", mr: "कालावधी", gu: "સમયગાળો", bn: "সময়কাল", ta: "காலம்", te: "వ్యవధి" },
+  "payment": { en: "Payment", hi: "भुगतान", mr: "पेमेंट", gu: "ચુકવણી", bn: "পেমেন্ট", ta: "கட்டணம்", te: "చెల్లింపు" },
+  "start_date": { en: "Start Date", hi: "आरंभिक तिथि", mr: "सुरवात तारीख", gu: "પ્રારંભ તારીખ", bn: "শুরুর তারিখ", ta: "தொடக்க தேதி", te: "ప్రారంభ తేదీ" },
+  "wage_verified_msg": { en: "Wage verified — meets state minimum wage", hi: "मजदूरी सत्यापित — न्यूनतम मजदूरी से अधिक", mr: "मजुरी सत्यापित — किमान मजुरी पूर्ण करते", gu: "વેતન ચકાસાયેલ — ન્યૂનતમ વેતનને પૂર્ણ કરે છે", bn: "মজুরি যাচাইকৃত", ta: "ஊதியம் சரிபார்க்கப்பட்டது", te: "వేతనం ధృవీకరించబడింది" },
+  "wage_warning_msg": { en: "Warning: Below legal minimum wage", hi: "चेतावनी: कानूनी न्यूनतम से नीचे", mr: "चेतावणी: कायदेशीर किमान खाली", gu: "ચેતવણી: કાનૂની લઘુત્તમથી નીચે", bn: "সতর্কতা: ন্যূনতম মজুরির নিচে", ta: "எச்சரிக்கை: குறைந்தபட்ச ஊதியத்திற்கு கீழ்", te: "హెచ్చరిక: కనీస వేతనం కంటే తక్కువ" },
+  "job_description": { en: "Job Description", hi: "नौकरी का विवरण", mr: "नोकरीचे वर्णन", gu: "નોકરીનું વર્ણન", bn: "চাকরির বিবরণ", ta: "வேலை விவரம்", te: "ఉద్యోగ వివరణ" },
+  "skills_required": { en: "Skills Required", hi: "आवश्यक कौशल", mr: "आवश्यक कौशल्य", gu: "જરૂરી કૌશલ્યો", bn: "প্রয়োজনীয় দক্ষতা", ta: "தேவையான திறன்", te: "నైపుణ్యాలు అవసరం" },
+  "accept_job_offer": { en: "Accept Job Offer", hi: "नौकरी का प्रस्ताव स्वीकार करें", mr: "नोकरीचा प्रस्ताव स्वीकारा", gu: "નોકરીની ઓફર સ્વીકારો", bn: "চাকরির প্রস্তাব গ্রহণ করুন", ta: "வேலை வாய்ப்பை ஏற்கவும்", te: "ఉద్యోగ ఆఫర్ని అంగీకరించండి" },
+  "job_accepted_msg": { en: "Job Accepted — You will be notified", hi: "नौकरी स्वीकृत — आपको सूचित किया जाएगा", mr: "नोकरी स्वीकारली — तुम्हाला कळवले जाईल", gu: "નોકરી સ્વીકારાઈ — તમને જાણ કરવામાં આવશે", bn: "চাকরি গৃহীত", ta: "வேலை ஏற்கப்பட்டது", te: "ఉద్యోగం అంగీకరించబడింది" }
 };
 
 export function t(key: string, lang: Language): string {
-  return translations[key]?.[lang] ?? translations[key]?.en ?? key;
+  if (!key) return "";
+  return translations[key]?.[lang] ?? translations[key]?.hi ?? translations[key]?.en ?? key;
 }
