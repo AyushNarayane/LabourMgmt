@@ -1,10 +1,10 @@
 "use client";
 
 import React from "react";
-import { Briefcase, Users, AlertTriangle, TrendingUp, Plus, Star, MapPin } from "lucide-react";
+import { Briefcase, Users, AlertTriangle, TrendingUp, Plus, Star, MapPin, UserRound, Trash2 } from "lucide-react";
 import { mockEmployer, Job } from "@/lib/mockData";
 import Link from "next/link";
-import { collection, query, where, getDocs, orderBy, limit } from "firebase/firestore";
+import { collection, query, where, getDocs, orderBy, limit, doc, updateDoc, arrayRemove } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { useAuth } from "@/components/AuthProvider";
 
@@ -59,6 +59,28 @@ export default function EmployerDashboard() {
     }
     fetchEmployerJobs();
   }, [user]);
+
+  const handleRemoveWorker = async (jobId: string, workerObj: any) => {
+    if (!confirm(`Are you sure you want to remove ${workerObj.name} from this job?`)) return;
+    try {
+      const jobRef = doc(db, "jobs", jobId);
+      await updateDoc(jobRef, {
+        acceptedWorkers: arrayRemove(workerObj)
+      });
+      setPostedJobs(jobs => jobs.map(j => {
+        if (j.id === jobId) {
+          return {
+            ...j,
+            acceptedWorkers: (j as any).acceptedWorkers?.filter((w: any) => w.workerId !== workerObj.workerId)
+          };
+        }
+        return j;
+      }));
+    } catch(err) {
+      console.error("Error removing worker:", err);
+      alert("Failed to remove worker.");
+    }
+  };
 
   return (
     <div className="bg-[#f3f3f5] min-h-screen text-[#1a1c1d] pb-24 font-sans">
@@ -123,6 +145,39 @@ export default function EmployerDashboard() {
                   <span className="flex items-center gap-1"><MapPin className="w-3.5 h-3.5" /> {job.location}</span>
                   <span>₹{job.wagePerDay}/day · {job.durationDays} days</span>
                 </div>
+
+                {/* Display Accepted Workers */}
+                {(job as any).acceptedWorkers && (job as any).acceptedWorkers.length > 0 && (
+                  <div className="mt-4 pt-4 border-t border-[#eeeef0]">
+                    <p className="text-xs font-bold text-[#767683] uppercase tracking-wider mb-3">Workers Joined</p>
+                    <div className="space-y-3">
+                      {(job as any).acceptedWorkers.map((w: any, idx: number) => (
+                        <div key={idx} className="flex justify-between items-center bg-[#f9f9fb] p-3 rounded-lg border border-[#e8e8ea]">
+                          <div className="flex items-center gap-3">
+                            <div className="w-8 h-8 rounded-full bg-[#1A237E]/10 flex items-center justify-center">
+                              <UserRound className="w-4 h-4 text-[#1A237E]" />
+                            </div>
+                            <div>
+                              <p className="text-sm font-bold text-[#1a1c1d] leading-none mb-1">{w.name}</p>
+                              <div className="flex items-center gap-2 text-[11px] text-[#767683] font-medium">
+                                {w.rating && <span className="flex items-center gap-0.5 text-amber-500"><Star className="w-3 h-3 fill-amber-500" />{w.rating}</span>}
+                                <span>•</span>
+                                <span>{w.experience}</span>
+                              </div>
+                            </div>
+                          </div>
+                          <button 
+                            onClick={() => handleRemoveWorker(job.id, w)}
+                            className="text-[#ba1a1a] p-1.5 hover:bg-[#ba1a1a]/10 rounded-md transition-colors"
+                            title="Remove Worker"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
             )) : (
               <p className="text-sm text-[#767683] text-center py-8">No jobs posted yet. Post your first job above!</p>
