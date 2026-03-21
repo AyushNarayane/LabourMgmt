@@ -2,10 +2,45 @@
 
 import React from "react";
 import { ArrowLeft, MapPin, IndianRupee, Briefcase, CalendarClock, Building2, CheckCircle2, ShieldCheck } from "lucide-react";
-import { mockJobs } from "@/lib/mockData";
+import { mockJobs, Job } from "@/lib/mockData";
 import Link from "next/link";
+import { collection, getDocs } from "firebase/firestore";
+import { db } from "@/lib/firebase";
+
+import { useAuth } from "@/components/AuthProvider";
+import { useRouter } from "next/navigation";
 
 export default function AllJobsPage() {
+  const { user, loading: authLoading } = useAuth();
+  const router = useRouter();
+
+  const [jobs, setJobs] = React.useState<Job[]>([]);
+  const [loading, setLoading] = React.useState(true);
+
+  React.useEffect(() => {
+    if (!authLoading && !user) {
+      router.push("/register?role=worker");
+    }
+  }, [user, authLoading, router]);
+
+  React.useEffect(() => {
+    async function fetchJobs() {
+      try {
+        const jobsRef = collection(db, "jobs");
+        const snapshot = await getDocs(jobsRef);
+        const fbJobs: Job[] = [];
+        snapshot.forEach((doc) => fbJobs.push({ id: doc.id, ...doc.data() } as Job));
+        setJobs(fbJobs.length > 0 ? fbJobs : mockJobs);
+      } catch (err) {
+        console.error(err);
+        setJobs(mockJobs);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchJobs();
+  }, []);
+
   return (
     <div className="bg-[#f3f3f5] min-h-screen text-[#1a1c1d] pb-24 font-sans">
       <div className="bg-[#1A237E] text-white pt-12 pb-8 px-6 shadow-md rounded-b-3xl">
@@ -15,11 +50,11 @@ export default function AllJobsPage() {
           </Link>
           <h1 className="text-xl font-bold tracking-tight">Available Jobs</h1>
         </div>
-        <p className="text-[#bdc2ff] text-sm">{mockJobs.length} jobs matched to your skills</p>
+        <p className="text-[#bdc2ff] text-sm">{loading ? 'Loading jobs...' : `${jobs.length} jobs matched to your skills`}</p>
       </div>
 
       <main className="px-5 mt-6 space-y-4">
-        {mockJobs.map((job) => (
+        {jobs.map((job) => (
           <Link key={job.id} href={`/jobs/${job.id}`} className="block">
             <div className="bg-white rounded-xl shadow-[0_4px_16px_rgba(0,0,0,0.04)] border border-[#eeeef0] p-5 active:scale-[0.99] transition-transform">
               <div className="flex justify-between items-start mb-3">

@@ -2,12 +2,47 @@
 
 import React from "react";
 import { ArrowLeft, FileCheck2, ExternalLink, ShieldCheck, XCircle } from "lucide-react";
-import { mockSchemes } from "@/lib/mockData";
+import { mockSchemes, GovernmentScheme } from "@/lib/mockData";
 import Link from "next/link";
+import { collection, getDocs } from "firebase/firestore";
+import { db } from "@/lib/firebase";
+
+import { useAuth } from "@/components/AuthProvider";
+import { useRouter } from "next/navigation";
 
 export default function SchemesPage() {
-  const eligible = mockSchemes.filter(s => s.isEligible);
-  const notEligible = mockSchemes.filter(s => !s.isEligible);
+  const { user, loading: authLoading } = useAuth();
+  const router = useRouter();
+
+  const [schemes, setSchemes] = React.useState<GovernmentScheme[]>([]);
+  const [loading, setLoading] = React.useState(true);
+
+  React.useEffect(() => {
+    if (!authLoading && !user) {
+      router.push("/register?role=worker");
+    }
+  }, [user, authLoading, router]);
+
+  React.useEffect(() => {
+    async function fetchSchemes() {
+      try {
+        const schemesRef = collection(db, "schemes");
+        const snapshot = await getDocs(schemesRef);
+        const fbSchemes: GovernmentScheme[] = [];
+        snapshot.forEach((doc) => fbSchemes.push({ id: doc.id, ...doc.data() } as GovernmentScheme));
+        setSchemes(fbSchemes.length > 0 ? fbSchemes : mockSchemes);
+      } catch (err) {
+        console.error(err);
+        setSchemes(mockSchemes);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchSchemes();
+  }, []);
+
+  const eligible = schemes.filter(s => s.isEligible);
+  const notEligible = schemes.filter(s => !s.isEligible);
 
   return (
     <div className="bg-[#f3f3f5] min-h-screen text-[#1a1c1d] pb-24 font-sans">
@@ -19,7 +54,9 @@ export default function SchemesPage() {
           </Link>
           <h1 className="text-xl font-bold tracking-tight">Government Schemes</h1>
         </div>
-        <p className="text-[#bdc2ff] text-sm">You are eligible for {eligible.length} schemes based on your profile.</p>
+        <p className="text-[#bdc2ff] text-sm">
+          {loading ? "Loading schemes..." : `You are eligible for ${eligible.length} schemes based on your profile.`}
+        </p>
       </div>
 
       <main className="px-5 mt-6 space-y-6">
