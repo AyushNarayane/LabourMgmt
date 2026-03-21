@@ -87,7 +87,8 @@ export default function Home() {
           phone: userProfile?.phone || "N/A",
           experience: worker.jobsCompleted + " jobs done",
           rating: worker.rating,
-          acceptedAt: new Date().toISOString()
+          acceptedAt: new Date().toISOString(),
+          status: "tentative"
         })
       });
       

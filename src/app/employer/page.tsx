@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { Briefcase, Users, AlertTriangle, TrendingUp, Plus, Star, MapPin, UserRound, Trash2 } from "lucide-react";
+import { Briefcase, Users, AlertTriangle, TrendingUp, Plus, Star, MapPin, UserRound, Trash2, FileCheck2, ChevronRight } from "lucide-react";
 import { mockEmployer, Job } from "@/lib/mockData";
 import Link from "next/link";
 import { collection, query, where, getDocs, orderBy, limit, doc, updateDoc, arrayRemove } from "firebase/firestore";
@@ -58,28 +58,6 @@ export default function EmployerDashboard() {
     fetchEmployerJobs();
   }, [user]);
 
-  const handleRemoveWorker = async (jobId: string, workerObj: any) => {
-    if (!confirm(`Are you sure you want to remove ${workerObj.name} from this job?`)) return;
-    try {
-      const jobRef = doc(db, "jobs", jobId);
-      await updateDoc(jobRef, {
-        acceptedWorkers: arrayRemove(workerObj)
-      });
-      setPostedJobs(jobs => jobs.map(j => {
-        if (j.id === jobId) {
-          return {
-            ...j,
-            acceptedWorkers: (j as any).acceptedWorkers?.filter((w: any) => w.workerId !== workerObj.workerId)
-          };
-        }
-        return j;
-      }));
-    } catch(err) {
-      console.error("Error removing worker:", err);
-      alert("Failed to remove worker.");
-    }
-  };
-
   return (
     <div className="bg-[#f3f3f5] min-h-screen text-[#1a1c1d] pb-24 font-sans">
       {/* Header */}
@@ -96,34 +74,7 @@ export default function EmployerDashboard() {
       </div>
 
       <main className="px-5 -mt-4 space-y-6">
-        {/* Verification / Search Card */}
-        <div className="bg-white rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.06)] border border-[#e2e8f0] p-6">
-          <div className="flex items-center gap-3 mb-4">
-             <div className="bg-[#3B4F8C] rounded-full p-2">
-                <Users className="w-5 h-5 text-white" />
-             </div>
-             <h2 className="text-lg font-bold text-[#1e293b]">Verify a Worker</h2>
-          </div>
-          <p className="text-sm text-[#64748b] mb-5">Scan the worker&apos;s digital card QR code or enter their ID below to verify identity and skills.</p>
-          
-          <div className="flex gap-2">
-            <input 
-              type="text" 
-              placeholder="Enter Worker ID (e.g. w-1001)"
-              className="flex-1 bg-[#f1f5f9] rounded-xl px-4 py-3 text-sm font-bold text-[#1e293b] focus:outline-none focus:ring-2 focus:ring-[#3B4F8C] transition-all"
-              id="workerIdSearch"
-            />
-            <button 
-              onClick={() => {
-                const id = (document.getElementById('workerIdSearch') as HTMLInputElement).value;
-                if (id) router.push(`/verify/${id}`);
-              }}
-              className="bg-[#3B4F8C] text-white px-5 py-3 rounded-xl font-bold text-sm shadow-md active:scale-95 transition-all"
-            >
-              Verify
-            </button>
-          </div>
-        </div>
+
 
         {/* Stats Grid */}
         <div className="grid grid-cols-2 gap-3">
@@ -139,69 +90,61 @@ export default function EmployerDashboard() {
           </div>
         </div>
 
-        {/* Post New Job CTA */}
-        <Link href="/employer/post-job" className="block">
-          <div className="bg-[#3B4F8C] rounded-2xl p-5 flex items-center gap-4 shadow-lg active:scale-[0.98] transition-all">
-            <div className="bg-white/20 p-3 rounded-full">
-              <Plus className="w-6 h-6 text-white" />
+        {/* Action Buttons */}
+        <div className="grid grid-cols-2 gap-4">
+          <Link href="/employer/post-job" className="block">
+            <div className="bg-[#3B4F8C] rounded-2xl p-5 flex flex-col items-center gap-3 shadow-lg active:scale-[0.98] transition-all text-center">
+              <div className="bg-white/20 p-3 rounded-full">
+                <Plus className="w-6 h-6 text-white" />
+              </div>
+              <div>
+                <p className="text-white font-black text-lg font-lexend">Post a Job</p>
+                <p className="text-[#bdc2ff] text-[10px] uppercase font-black tracking-widest">Find Recruits</p>
+              </div>
             </div>
-            <div className="flex-1">
-              <p className="text-white font-bold text-lg">Post a New Job</p>
-              <p className="text-[#bdc2ff] text-sm">Find verified workers nearby</p>
+          </Link>
+
+          <Link href="/employer/issue-certificate" className="block">
+            <div className="bg-white border-2 border-[#3B4F8C] rounded-2xl p-5 flex flex-col items-center gap-3 shadow-md active:scale-[0.98] transition-colors text-center group hover:bg-[#3B4F8C]/5">
+              <div className="bg-[#3B4F8C]/10 p-3 rounded-full group-hover:bg-[#3B4F8C]/20 transition-colors">
+                <FileCheck2 className="w-6 h-6 text-[#3B4F8C]" />
+              </div>
+              <div>
+                <p className="text-[#3B4F8C] font-black text-lg font-lexend">Issue Log</p>
+                <p className="text-[#94a3b8] text-[10px] uppercase font-black tracking-widest">Certify Work</p>
+              </div>
             </div>
-          </div>
-        </Link>
+          </Link>
+        </div>
 
         {/* Recent Jobs */}
         <div>
           <h3 className="text-lg font-bold text-[#343d96] mb-4 px-1">Your Recent Postings</h3>
           <div className="space-y-3">
             {postedJobs.length > 0 ? postedJobs.map(job => (
-              <div key={job.id} className="bg-white rounded-xl shadow-[0_4px_16px_rgba(0,0,0,0.04)] border border-[#eeeef0] p-5">
-                <div className="flex justify-between items-start mb-2">
+              <Link key={job.id} href={`/employer/job/${job.id}`} className="block bg-white rounded-xl shadow-[0_4px_16px_rgba(0,0,0,0.04)] border border-[#eeeef0] p-5 hover:shadow-md transition-shadow group relative overflow-hidden">
+                <div className="absolute top-1/2 -mt-3 right-4 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all">
+                  <ChevronRight className="w-6 h-6 text-[#3B4F8C]" />
+                </div>
+                <div className="flex justify-between items-start mb-2 pr-6">
                   <h4 className="font-bold text-[#1a1c1d]">{job.title}</h4>
                   <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded ${
                     job.status === 'open' ? 'bg-[#a0f399]/30 text-[#005312]' : 'bg-[#f0f0f2] text-[#454652]'
                   }`}>{job.status}</span>
                 </div>
-                <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-[#454652]">
+                <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-[#454652] mb-3">
                   <span className="flex items-center gap-1"><MapPin className="w-3.5 h-3.5" /> {job.location}</span>
                   <span>₹{job.wagePerDay}/day · {job.durationDays} days</span>
                 </div>
-
-                {/* Display Accepted Workers */}
-                {(job as any).acceptedWorkers && (job as any).acceptedWorkers.length > 0 && (
-                  <div className="mt-4 pt-4 border-t border-[#eeeef0]">
-                    <p className="text-xs font-bold text-[#767683] uppercase tracking-wider mb-3">Workers Joined</p>
-                    <div className="space-y-3">
-                      {(job as any).acceptedWorkers.map((w: any, idx: number) => (
-                        <div key={idx} className="flex justify-between items-center bg-[#f9f9fb] p-3 rounded-lg border border-[#e8e8ea]">
-                          <div className="flex items-center gap-3">
-                            <div className="w-8 h-8 rounded-full bg-[#1A237E]/10 flex items-center justify-center">
-                              <UserRound className="w-4 h-4 text-[#1A237E]" />
-                            </div>
-                            <div>
-                              <p className="text-sm font-bold text-[#1a1c1d] leading-none mb-1">{w.name}</p>
-                              <div className="flex items-center gap-2 text-[11px] text-[#767683] font-medium">
-                                {w.rating && <span className="flex items-center gap-0.5 text-amber-500"><Star className="w-3 h-3 fill-amber-500" />{w.rating}</span>}
-                                <span>•</span>
-                                <span>{w.experience}</span>
-                              </div>
-                            </div>
-                          </div>
-                          <button 
-                            onClick={() => handleRemoveWorker(job.id, w)}
-                            className="text-[#ba1a1a] p-1.5 hover:bg-[#ba1a1a]/10 rounded-md transition-colors"
-                            title="Remove Worker"
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </button>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </div>
+                
+                {/* Applicants Badge */}
+                <div className="inline-flex items-center gap-1.5 bg-[#f8fafc] border border-[#e2e8f0] px-2.5 py-1.5 rounded-md">
+                   <Users className="w-3.5 h-3.5 text-[#3B4F8C]" />
+                   <span className="text-[10px] font-black text-[#64748b] uppercase tracking-wider">
+                     {((job as any).acceptedWorkers?.length || 0)} Workers Joined
+                   </span>
+                </div>
+              </Link>
             )) : (
               <p className="text-sm text-[#767683] text-center py-8">No jobs posted yet. Post your first job above!</p>
             )}
