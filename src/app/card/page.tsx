@@ -36,7 +36,6 @@ export default function DigitalCardPage() {
     
   const isAadhaarVerified = userProfile?.isAadhaarVerified || worker.isAadhaarVerified;
   const aadhaarLast4 = userProfile?.aadhaarLast4 || worker.aadhaarLast4;
-  const skills = userProfile?.skills || worker.skills;
 
   const uniqueId = user?.uid || worker.id;
   const cardUrl = typeof window !== 'undefined' ? `${window.location.origin}/verify/${uniqueId}` : '';

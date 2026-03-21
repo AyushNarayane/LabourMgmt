@@ -86,30 +86,30 @@ export default function PostJobPage() {
   if (submitted) {
     return (
       <div className="bg-[#f3f3f5] min-h-screen text-[#1a1c1d] font-sans flex flex-col items-center justify-center px-8">
-        <div className="bg-[#a0f399]/30 p-6 rounded-full mb-6">
-          <CheckCircle2 className="w-16 h-16 text-[#1B6D24]" />
-        </div>
-        <h1 className="text-2xl font-bold text-center mb-2">Job Posted Successfully!</h1>
-        <p className="text-[#767683] text-center mb-2 max-w-sm">
-          Your job &quot;{form.title}&quot; has been posted. Matched workers nearby will be notified via app and SMS.
-        </p>
-        {wageFeedback && (
-          <div className={`flex items-center gap-2 text-sm font-semibold mt-2 mb-6 ${wageFeedback.isFair ? "text-[#005312]" : "text-[#93000a]"}`}>
-            {wageFeedback.isFair ? <ShieldCheck className="w-4 h-4" /> : <AlertTriangle className="w-4 h-4" />}
-            {wageFeedback.isFair ? "Wage verified ✓" : "Wage flagged — below minimum"}
+          <div className="bg-[#a0f399]/30 p-6 rounded-full mb-6">
+            <CheckCircle2 className="w-16 h-16 text-[#1B6D24]" />
           </div>
-        )}
-        <div className="flex flex-col gap-3 w-full max-w-sm">
-          <Link href="/employer" className="w-full bg-gradient-to-r from-[#000666] to-[#1A237E] text-white py-4 rounded-xl font-bold text-center text-lg active:scale-95 transition-transform">
-            Back to Dashboard
-          </Link>
-          <button
-            onClick={() => { setSubmitted(false); setForm({ title: "", description: "", skill: "", state: "", location: "", durationDays: "", wagePerDay: "" }); setWageFeedback(null); }}
-            className="w-full bg-white border-2 border-[#1A237E] text-[#1A237E] py-3 rounded-xl font-bold text-center active:scale-95 transition-transform"
-          >
-            Post Another Job
-          </button>
-        </div>
+          <h1 className="text-2xl font-bold text-center mb-2">Job Posted Successfully!</h1>
+          <p className="text-[#767683] text-center mb-2 max-w-sm">
+            Your job &quot;{form.title}&quot; has been posted. Matched workers nearby will be notified via app and SMS.
+          </p>
+          {wageFeedback && (
+            <div className={`flex items-center gap-2 text-sm font-semibold mt-2 mb-6 ${wageFeedback.isFair ? "text-[#005312]" : "text-[#93000a]"}`}>
+              {wageFeedback.isFair ? <ShieldCheck className="w-4 h-4" /> : <AlertTriangle className="w-4 h-4" />}
+              {wageFeedback.isFair ? "Wage verified ✓" : "Wage flagged — below minimum"}
+            </div>
+          )}
+          <div className="flex flex-col gap-3 w-full max-w-sm">
+            <Link href="/employer" className="w-full bg-gradient-to-r from-[#000666] to-[#1A237E] text-white py-4 rounded-xl font-bold text-center text-lg active:scale-95 transition-transform">
+              Back to Dashboard
+            </Link>
+            <button
+              onClick={() => { setSubmitted(false); setForm({ title: "", description: "", skill: "", state: "", location: "", durationDays: "", wagePerDay: "" }); setWageFeedback(null); }}
+              className="w-full bg-white border-2 border-[#1A237E] text-[#1A237E] py-3 rounded-xl font-bold text-center active:scale-95 transition-transform"
+            >
+              Post Another Job
+            </button>
+          </div>
       </div>
     );
   }

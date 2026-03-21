@@ -105,7 +105,7 @@ export default function Home() {
   };
 
   return (
-    <div className="bg-[#f3f3f5] min-h-screen text-[#1a1c1d] pb-20 font-sans">
+    <div className="bg-[#f3f3f5] min-h-screen text-[#1a1c1d] pb-24 font-sans antialiased">
       {/* Top Section / Header */}
       <div className="bg-[#3B4F8C] text-white pt-12 pb-24 px-6 rounded-b-3xl shadow-lg relative overflow-hidden">
         {/* Subtle pattern overlay */}
