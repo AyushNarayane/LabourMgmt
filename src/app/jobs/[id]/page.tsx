@@ -20,6 +20,7 @@ export default function JobDetailsPage({ params }: { params: Promise<{ id: strin
   const [job, setJob] = useState<Job | null>(null);
   const [loading, setLoading] = useState(true);
   const [accepted, setAccepted] = useState(false);
+  const { t } = useLang();
   const [isAccepting, setIsAccepting] = useState(false);
 
   React.useEffect(() => {
@@ -198,7 +199,7 @@ export default function JobDetailsPage({ params }: { params: Promise<{ id: strin
             }}
             className="w-full bg-gradient-to-r from-[#000666] to-[#1A237E] text-white py-4 rounded-xl font-bold shadow-[0_4px_12px_rgba(26,35,126,0.2)] text-lg hover:shadow-lg transition-transform active:scale-95 disabled:opacity-50"
           >
-            {isAccepting ? "Accepting..." : "Accept Job Offer"}
+            {isAccepting ? t("accepting") : t("accept_job_offer")}
           </button>
         ) : (
           <button disabled className="w-full bg-[#a0f399]/30 text-[#005312] py-4 rounded-xl font-bold text-lg flex items-center justify-center gap-2 border border-[#a0f399]">
