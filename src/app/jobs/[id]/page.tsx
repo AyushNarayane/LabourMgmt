@@ -4,7 +4,7 @@ import React, { useState, use } from "react";
 import { ArrowLeft, MapPin, IndianRupee, Briefcase, CalendarClock, Building2, CheckCircle2, ShieldCheck, AlertTriangle } from "lucide-react";
 import { mockJobs, Job } from "@/lib/mockData";
 import Link from "next/link";
-import { doc, getDoc } from "firebase/firestore";
+import { doc, getDoc, updateDoc, arrayUnion } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 
 import { useAuth } from "@/components/AuthProvider";
@@ -20,7 +20,7 @@ export default function JobDetailsPage({ params }: { params: Promise<{ id: strin
   const [job, setJob] = useState<Job | null>(null);
   const [loading, setLoading] = useState(true);
   const [accepted, setAccepted] = useState(false);
-  const { t } = useLang();
+  const [isAccepting, setIsAccepting] = useState(false);
 
   React.useEffect(() => {
     if (authLoading) return;
@@ -37,7 +37,11 @@ export default function JobDetailsPage({ params }: { params: Promise<{ id: strin
         const docRef = doc(db, "jobs", resolvedParams.id);
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
-          setJob({ id: docSnap.id, ...docSnap.data() } as Job);
+          const jobData = { id: docSnap.id, ...docSnap.data() } as Job;
+          setJob(jobData);
+          if ((jobData as any).acceptedWorkers?.some((w: any) => w.workerId === user?.uid)) {
+            setAccepted(true);
+          }
         } else {
           // Fallback to mock
           const mockJ = mockJobs.find(j => j.id === resolvedParams.id);
@@ -167,10 +171,34 @@ export default function JobDetailsPage({ params }: { params: Promise<{ id: strin
       <div className="fixed bottom-0 left-0 right-0 p-5 bg-white/90 backdrop-blur-xl border-t border-[#eeeef0]">
         {!accepted ? (
           <button
-            onClick={() => setAccepted(true)}
-            className="w-full bg-gradient-to-r from-[#000666] to-[#1A237E] text-white py-4 rounded-xl font-bold shadow-[0_4px_12px_rgba(26,35,126,0.2)] text-lg hover:shadow-lg transition-transform active:scale-95"
+            disabled={isAccepting}
+            onClick={async () => {
+              if (!user || !job) return;
+              setIsAccepting(true);
+              try {
+                const jobRef = doc(db, "jobs", job.id);
+                await updateDoc(jobRef, {
+                  acceptedWorkers: arrayUnion({
+                    workerId: user.uid,
+                    name: userProfile?.name || user?.displayName || "Worker",
+                    role: userProfile?.skills?.[0] || "Worker",
+                    phone: userProfile?.phone || "N/A",
+                    experience: "Verified Member", 
+                    rating: 5.0, 
+                    acceptedAt: new Date().toISOString()
+                  })
+                });
+                setAccepted(true);
+              } catch (err) {
+                console.error(err);
+                alert("Failed to accept job.");
+              } finally {
+                setIsAccepting(false);
+              }
+            }}
+            className="w-full bg-gradient-to-r from-[#000666] to-[#1A237E] text-white py-4 rounded-xl font-bold shadow-[0_4px_12px_rgba(26,35,126,0.2)] text-lg hover:shadow-lg transition-transform active:scale-95 disabled:opacity-50"
           >
-            {t("accept_job_offer")}
+            {isAccepting ? "Accepting..." : "Accept Job Offer"}
           </button>
         ) : (
           <button disabled className="w-full bg-[#a0f399]/30 text-[#005312] py-4 rounded-xl font-bold text-lg flex items-center justify-center gap-2 border border-[#a0f399]">
