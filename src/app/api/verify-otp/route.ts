@@ -19,38 +19,57 @@ export async function POST(request: Request) {
         }
 
         let aadhaarData: any = null;
+        const isDemoFallback = !request_id || request_id.startsWith("DEMO_FALLBACK_");
 
-        try {
-            // Step 1: Authenticate with Sandbox
-            const authRes = await axios.post(`${SANDBOX_BASE_URL}/authenticate`, {}, {
-                headers: {
-                    "x-api-key": SANDBOX_API_KEY,
-                    "x-api-secret": SANDBOX_API_SECRET,
-                    "x-api-version": "1.0",
-                    "accept": "application/json"
+        if (!isDemoFallback) {
+            try {
+                // Step 1: Authenticate with Sandbox
+                const authRes = await axios.post(`${SANDBOX_BASE_URL}/authenticate`, {}, {
+                    headers: {
+                        "x-api-key": SANDBOX_API_KEY,
+                        "x-api-secret": SANDBOX_API_SECRET,
+                        "x-api-version": "1.0",
+                        "accept": "application/json"
+                    }
+                });
+                const token = authRes.data.access_token;
+
+                // Step 2: Verify OTP with Sandbox
+                const verifyRes = await axios.post(`${SANDBOX_BASE_URL}/kyc/aadhaar/okyc/otp/verify`, {
+                    "@entity": "in.co.sandbox.kyc.aadhaar.okyc.request",
+                    request_id: request_id,
+                    otp: otp,
+                }, {
+                    headers: {
+                        "Authorization": token,
+                        "x-api-key": SANDBOX_API_KEY,
+                        "x-api-version": "1.0",
+                        "content-type": "application/json"
+                    }
+                });
+
+                aadhaarData = verifyRes.data?.data;
+            } catch (sandboxError: any) {
+                const status = sandboxError.response?.status;
+                const errMsg = sandboxError.response?.data?.message
+                    || sandboxError.response?.data?.error
+                    || "";
+
+                // If Sandbox explicitly rejected the OTP (4xx) — wrong OTP, expired, etc.
+                // → Reject the login. Do NOT fall through to demo data.
+                if (status && status >= 400 && status < 500) {
+                    console.warn("Sandbox rejected OTP (status", status, "):", errMsg);
+                    return NextResponse.json(
+                        { error: errMsg || "Invalid or expired OTP. Please try again." },
+                        { status: 401 }
+                    );
                 }
-            });
-            const token = authRes.data.access_token;
 
-            // Step 2: Verify OTP with Sandbox
-            const verifyRes = await axios.post(`${SANDBOX_BASE_URL}/kyc/aadhaar/okyc/otp/verify`, {
-                "@entity": "in.co.sandbox.kyc.aadhaar.okyc.request",
-                request_id: request_id || "",
-                otp: otp,
-            }, {
-                headers: {
-                    "Authorization": token,
-                    "x-api-key": SANDBOX_API_KEY,
-                    "x-api-version": "1.0",
-                    "content-type": "application/json"
-                }
-            });
-
-            aadhaarData = verifyRes.data?.data;
-        } catch (sandboxError: any) {
-            console.warn("Sandbox OTP verify failed (using demo fallback):", sandboxError.response?.data || sandboxError.message);
-            // For demo/hackathon: proceed with mock user data
+                // Network/infra issue — fall through to demo mock data.
+                console.warn("Sandbox unreachable (using demo fallback):", sandboxError.message);
+            }
         }
+        // isDemoFallback = true → skip Sandbox entirely, use mock data below
 
         // Build location string from Aadhaar address if available
         const addr = aadhaarData?.address;

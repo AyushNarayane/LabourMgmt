@@ -45,10 +45,11 @@ export async function POST(request: Request) {
     } catch (error: any) {
         console.error("SANDBOX API ERROR:", error.response?.data || error.message);
         
-        // Even if Sandbox API fails due to rate limits or dummy data lockouts,
-        // we return 200 so the hackathon frontend proceeds to the OTP page smoothly!
+        // Even if Sandbox API fails, return a dummy request_id so the frontend
+        // can proceed to the OTP page and the verify call won't get "Invalid request body"
         return NextResponse.json({ 
-            success: true, 
+            success: true,
+            data: { request_id: "DEMO_FALLBACK_" + Date.now() },
             warning: "Sandbox API error swallowed for demo progression" 
         });
     }
