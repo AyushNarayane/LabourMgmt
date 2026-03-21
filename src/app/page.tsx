@@ -39,7 +39,7 @@ export default function Home() {
           {/* Worker Card */}
           {(!user || userProfile?.role === "worker") && (
             <Link
-              href={user ? "/worker" : "/register?role=worker"}
+              href="/register?role=worker"
               className="group block bg-white rounded-3xl p-8 md:p-10 shadow-[0_12px_40px_rgba(26,35,126,0.08)] border border-[#eeeef0] transition-all hover:-translate-y-1 hover:shadow-[0_20px_48px_rgba(26,35,126,0.12)]"
             >
               <div className="w-16 h-16 rounded-2xl bg-[#e0e0ff] flex items-center justify-center mb-6">
