@@ -4,7 +4,7 @@ import React from "react";
 import Link from "next/link";
 import { ArrowRight, Building2, UserRound, ShieldCheck, Activity } from "lucide-react";
 import { useLang } from "@/components/LangProvider";
-import { useUser } from "@/components/UserProvider";
+import { useAuth } from "@/components/AuthProvider";
 
 export default function Home() {
   const { t } = useLang();
@@ -15,7 +15,6 @@ export default function Home() {
       {/* Hero Section */}
       <section className="relative px-6 pt-20 pb-24 lg:pt-32 lg:pb-40 overflow-hidden isolate">
         <div className="absolute inset-0 -z-10 bg-gradient-to-br from-[#000666] to-[#1A237E]"></div>
-
         <div className="max-w-4xl mx-auto text-center">
           <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 text-white/90 text-sm font-semibold mb-8 backdrop-blur-md border border-white/20">
             <ShieldCheck className="w-4 h-4" />
@@ -34,12 +33,13 @@ export default function Home() {
 
       {/* Action Cards (Pulled up to overlap hero) */}
       <section className="px-5 -mt-16 sm:-mt-24 pb-20 relative z-10">
-        <div className={`max-w-4xl mx-auto grid gap-6 ${user && userProfile ? "max-w-md" : "md:grid-cols-2"}`}>
+        <div className="max-w-4xl mx-auto grid md:grid-cols-2 gap-6">
           
+          {/* Worker Card */}
           {/* Worker Card */}
           {(!user || userProfile?.role === "worker") && (
             <Link
-              href="/register?role=worker"
+              href={user ? "/worker" : "/register?role=worker"}
               className="group block bg-white rounded-3xl p-8 md:p-10 shadow-[0_12px_40px_rgba(26,35,126,0.08)] border border-[#eeeef0] transition-all hover:-translate-y-1 hover:shadow-[0_20px_48px_rgba(26,35,126,0.12)]"
             >
               <div className="w-16 h-16 rounded-2xl bg-[#e0e0ff] flex items-center justify-center mb-6">
@@ -88,8 +88,8 @@ export default function Home() {
         <div className="max-w-4xl mx-auto px-6">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center divide-y md:divide-y-0 md:divide-x divide-[#e8e8ea]">
             <div className="py-4 md:py-0 px-4">
-              <div className="mx-auto w-12 h-12 bg-[#e0e0ff] rounded-full flex items-center justify-center mb-4">
-                <ShieldCheck className="w-6 h-6 text-[#1A237E]" />
+              <div className="mx-auto w-12 h-12 bg-[#3B4F8C]/10 rounded-full flex items-center justify-center mb-4">
+                <ShieldCheck className="w-6 h-6 text-[#3B4F8C]" />
               </div>
               <h3 className="font-bold text-lg mb-2">Verified Identity</h3>
               <p className="text-sm text-[#767683]">Aadhaar-linked profiles for complete trust and transparency.</p>

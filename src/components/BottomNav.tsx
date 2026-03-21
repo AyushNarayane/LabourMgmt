@@ -30,9 +30,9 @@ export default function BottomNav() {
               href={item.href}
               className={`flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-xl transition-all duration-200 min-w-[56px]
                 ${isActive
-                  ? "text-[#1A237E] bg-[#e0e0ff]"
+                  ? "text-[#3B4F8C] bg-[#3B4F8C]/10"
                   : "text-[#767683] hover:text-[#454652]"
-                }`}
+                } transform transition-all duration-200 active:scale-95`}
             >
               <item.icon className={`w-5 h-5 ${isActive ? "stroke-[2.5px]" : ""}`} />
               <span className="text-[10px] font-semibold tracking-wide">{item.label}</span>
