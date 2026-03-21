@@ -14,7 +14,7 @@ export default function LandingPage() {
     <div className="bg-[#f9f9fb] min-h-screen text-[#1a1c1d] font-sans flex flex-col">
       {/* Hero Section */}
       <section className="relative px-6 pt-20 pb-24 lg:pt-32 lg:pb-40 overflow-hidden isolate">
-        <div className="absolute inset-0 -z-10 bg-gradient-to-br from-[#000666] to-[#1A237E]"></div>
+        <div className="absolute inset-0 -z-10 bg-gradient-to-br from-[#1e293b] to-[#3B4F8C]"></div>
         {/* Subtle decorative mesh/dots could go here */}
         
         <div className="max-w-4xl mx-auto text-center">
@@ -40,18 +40,18 @@ export default function LandingPage() {
           {/* Worker Card */}
           <Link
             href={user ? "/worker" : "/register?role=worker"}
-            className="group block bg-white rounded-3xl p-8 md:p-10 shadow-[0_12px_40px_rgba(26,35,126,0.08)] border border-[#eeeef0] transition-all hover:-translate-y-1 hover:shadow-[0_20px_48px_rgba(26,35,126,0.12)]"
+            className="group block bg-white rounded-3xl p-8 md:p-10 shadow-[0_12px_40px_rgba(59,79,140,0.08)] border border-[#eeeef0] transition-all hover:-translate-y-1 hover:shadow-[0_20px_48px_rgba(59,79,140,0.12)]"
           >
-            <div className="w-16 h-16 rounded-2xl bg-[#e0e0ff] flex items-center justify-center mb-6">
-              <UserRound className="w-8 h-8 text-[#1A237E]" />
+            <div className="w-16 h-16 rounded-2xl bg-[#3B4F8C]/10 flex items-center justify-center mb-6">
+              <UserRound className="w-8 h-8 text-[#3B4F8C]" />
             </div>
-            <h2 className="text-2xl font-bold text-[#1A237E] mb-3 group-hover:text-[#000666] transition-colors">
+            <h2 className="text-2xl font-bold text-[#3B4F8C] mb-3 group-hover:text-[#1e293b] transition-colors">
               I am a Job Seeker
             </h2>
             <p className="text-[#454652] mb-8 leading-relaxed">
               Find fair-wage jobs near you, access government benefits, and build your digital, verified labor identity.
             </p>
-            <div className="flex items-center gap-2 text-[#1A237E] font-bold">
+            <div className="flex items-center gap-2 text-[#3B4F8C] font-extrabold group">
               <span>{user ? "Enter Worker Portal" : "Join as a Worker"}</span>
               <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </div>
@@ -85,8 +85,8 @@ export default function LandingPage() {
         <div className="max-w-4xl mx-auto px-6">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center divide-y md:divide-y-0 md:divide-x divide-[#e8e8ea]">
             <div className="py-4 md:py-0 px-4">
-              <div className="mx-auto w-12 h-12 bg-[#e0e0ff] rounded-full flex items-center justify-center mb-4">
-                <ShieldCheck className="w-6 h-6 text-[#1A237E]" />
+              <div className="mx-auto w-12 h-12 bg-[#3B4F8C]/10 rounded-full flex items-center justify-center mb-4">
+                <ShieldCheck className="w-6 h-6 text-[#3B4F8C]" />
               </div>
               <h3 className="font-bold text-lg mb-2">Verified Identity</h3>
               <p className="text-sm text-[#767683]">Aadhaar-linked profiles for complete trust and transparency.</p>
