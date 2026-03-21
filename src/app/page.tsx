@@ -1,15 +1,21 @@
 "use client";
 
 import React, { useState } from "react";
-import { Star, ShieldCheck, MapPin, IndianRupee, Briefcase, ChevronRight, FileCheck2, UserRound, CheckCircle2 } from "lucide-react";
+import { Star, ShieldCheck, MapPin, IndianRupee, Briefcase, ChevronRight, FileCheck2, UserRound, CheckCircle2, LogOut, LogIn } from "lucide-react";
 import { mockWorker, mockJobs, mockSchemes, Job } from "@/lib/mockData";
 import Link from "next/link";
 import { useLang } from "@/components/LangProvider";
+import { useAuth } from "@/components/AuthProvider";
 
 export default function Home() {
   const [jobs, setJobs] = useState<Job[]>(mockJobs);
   const worker = mockWorker;
   const { t } = useLang();
+  const { user, userProfile, signOut } = useAuth();
+
+  // Use Firebase profile name if logged in, else mock
+  const displayName = userProfile?.name || user?.displayName || worker.name;
+  const isLoggedIn = !!user;
 
   const handleAcceptJob = (jobId: string) => {
     setJobs(currentJobs => 
@@ -23,8 +29,21 @@ export default function Home() {
     <div className="bg-[#f3f3f5] min-h-screen text-[#1a1c1d] pb-20 font-sans">
       {/* Top Section / Header */}
       <div className="bg-[#1A237E] text-white pt-12 pb-24 px-6 rounded-b-3xl shadow-md">
-        <h1 className="text-2xl font-bold tracking-tight mb-1">{t("app_name")}</h1>
-        <p className="text-[#bdc2ff] text-sm">{t("app_tagline")}</p>
+        <div className="flex justify-between items-start">
+          <div>
+            <h1 className="text-2xl font-bold tracking-tight mb-1">{t("app_name")}</h1>
+            <p className="text-[#bdc2ff] text-sm">{t("app_tagline")}</p>
+          </div>
+          {isLoggedIn ? (
+            <button onClick={() => signOut()} className="flex items-center gap-1.5 bg-white/10 hover:bg-white/20 px-3 py-1.5 rounded-full text-xs font-medium transition-all">
+              <LogOut className="w-3.5 h-3.5" /> Sign Out
+            </button>
+          ) : (
+            <Link href="/register" className="flex items-center gap-1.5 bg-white/20 hover:bg-white/30 px-3 py-1.5 rounded-full text-xs font-bold transition-all">
+              <LogIn className="w-3.5 h-3.5" /> Sign In
+            </Link>
+          )}
+        </div>
       </div>
 
       {/* Main Content Area */}
@@ -39,7 +58,7 @@ export default function Home() {
                   <UserRound className="w-8 h-8 text-[#1A237E]" />
                 </div>
                 <div>
-                  <h2 className="text-xl font-bold text-[#1A237E]">{worker.name}</h2>
+                  <h2 className="text-xl font-bold text-[#1A237E]">{displayName}</h2>
                   <p className="text-[#454652] font-medium text-sm flex items-center gap-1">
                     {worker.role} <span className="text-[#c6c5d4]">•</span> {worker.location}
                   </p>
