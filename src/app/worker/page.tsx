@@ -7,7 +7,7 @@ import Link from "next/link";
 import { QRCodeSVG } from "qrcode.react";
 import { useLang } from "@/components/LangProvider";
 import { useAuth } from "@/components/AuthProvider";
-import { collection, getDocs, query, where, documentId } from "firebase/firestore";
+import { collection, getDocs, query, where, documentId, doc, updateDoc, arrayUnion } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 
 import { useRouter } from "next/navigation";
@@ -52,7 +52,12 @@ export default function Home() {
         const jobsSnapshot = await getDocs(jobsRef);
         const fbJobs: Job[] = [];
         jobsSnapshot.forEach((doc) => {
-          fbJobs.push({ id: doc.id, ...doc.data() } as Job);
+          const data = doc.data();
+          let status = data.status || "open";
+          if (data.acceptedWorkers?.some((w: any) => w.workerId === user?.uid)) {
+            status = "accepted";
+          }
+          fbJobs.push({ id: doc.id, ...data, status } as Job);
         });
         // If Firestore is empty, fallback to mock data for demo
         setJobs(fbJobs.length > 0 ? fbJobs : mockJobs);
@@ -66,13 +71,36 @@ export default function Home() {
     fetchJobs();
   }, []);
 
-  const handleAcceptJob = (jobId: string) => {
-    // Optimistic UI update - in a real app, write to Firestore
-    setJobs(currentJobs => 
-      currentJobs.map(job => 
-        job.id === jobId ? { ...job, status: "accepted" } : job
-      )
-    );
+  const handleAcceptJob = async (jobId: string) => {
+    if (!user) {
+      alert("Please sign in to accept jobs.");
+      return;
+    }
+    
+    try {
+      const jobRef = doc(db, "jobs", jobId);
+      await updateDoc(jobRef, {
+        acceptedWorkers: arrayUnion({
+          workerId: user.uid,
+          name: displayName,
+          role: displayRole,
+          phone: userProfile?.phone || "N/A",
+          experience: worker.jobsCompleted + " jobs done",
+          rating: worker.rating,
+          acceptedAt: new Date().toISOString()
+        })
+      });
+      
+      // Optimistic UI update
+      setJobs(currentJobs => 
+        currentJobs.map(job => 
+          job.id === jobId ? { ...job, status: "accepted" } : job
+        )
+      );
+    } catch (error) {
+      console.error("Error accepting job:", error);
+      alert("Failed to accept job.");
+    }
   };
 
   return (
