@@ -4,10 +4,12 @@ import React, { useState } from "react";
 import { Star, ShieldCheck, MapPin, IndianRupee, Briefcase, ChevronRight, FileCheck2, UserRound, CheckCircle2 } from "lucide-react";
 import { mockWorker, mockJobs, mockSchemes, Job } from "@/lib/mockData";
 import Link from "next/link";
+import { useLang } from "@/components/LangProvider";
 
 export default function Home() {
   const [jobs, setJobs] = useState<Job[]>(mockJobs);
   const worker = mockWorker;
+  const { t } = useLang();
 
   const handleAcceptJob = (jobId: string) => {
     setJobs(currentJobs => 
@@ -21,8 +23,8 @@ export default function Home() {
     <div className="bg-[#f3f3f5] min-h-screen text-[#1a1c1d] pb-20 font-sans">
       {/* Top Section / Header */}
       <div className="bg-[#1A237E] text-white pt-12 pb-24 px-6 rounded-b-3xl shadow-md">
-        <h1 className="text-2xl font-bold tracking-tight mb-1">Shramik Setu</h1>
-        <p className="text-[#bdc2ff] text-sm">Your Digital Civic Identity</p>
+        <h1 className="text-2xl font-bold tracking-tight mb-1">{t("app_name")}</h1>
+        <p className="text-[#bdc2ff] text-sm">{t("app_tagline")}</p>
       </div>
 
       {/* Main Content Area */}
@@ -62,8 +64,8 @@ export default function Home() {
                   <ShieldCheck className="w-4 h-4 text-white" />
                 </div>
                 <div className="flex-1">
-                  <p className="text-xs font-bold tracking-wider uppercase">Verified Identity</p>
-                  <p className="text-sm font-medium">Aadhaar Linked</p>
+                  <p className="text-xs font-bold tracking-wider uppercase">{t("verified_identity")}</p>
+                  <p className="text-sm font-medium">{t("aadhaar_linked")}</p>
                 </div>
               </div>
             )}
@@ -73,7 +75,7 @@ export default function Home() {
         {/* Matched Jobs Section */}
         <section>
           <div className="flex justify-between items-end mb-4 px-1">
-            <h3 className="text-lg font-bold text-[#343d96]">Matched Jobs</h3>
+            <h3 className="text-lg font-bold text-[#343d96]">{t("matched_jobs")}</h3>
           </div>
           
           <div className="flex gap-4 overflow-x-auto pb-4 -mx-5 px-5 snap-x hide-scrollbar">
@@ -82,7 +84,7 @@ export default function Home() {
                 <div className="flex justify-between items-start mb-2">
                   <h4 className="font-bold text-[#1a1c1d] break-words flex-1 pr-2 leading-tight">{job.title}</h4>
                   <span className={`text-xs font-bold px-2 py-1 rounded-md ml-auto shrink-0 ${job.matchScore >= 80 ? 'bg-[#e0e0ff] text-[#000666]' : 'bg-[#f0f0f2] text-[#454652]'}`}>
-                    {job.matchScore}% Match
+                    {job.matchScore}% {t("match")}
                   </span>
                 </div>
                 <p className="text-sm text-[#454652] mb-4 line-clamp-1">{job.company}</p>
@@ -90,15 +92,15 @@ export default function Home() {
                 <div className="flex flex-col gap-2 mb-5 flex-1">
                   <div className="flex items-center gap-2 text-sm text-[#454652]">
                     <MapPin className="w-4 h-4 text-[#767683]" />
-                    <span>{job.distanceKm} km away</span>
+                    <span>{job.distanceKm} {t("km_away")}</span>
                   </div>
                   <div className="flex items-center gap-2 text-sm text-[#454652]">
                     <Briefcase className="w-4 h-4 text-[#767683]" />
-                    <span>{job.durationDays} Days req.</span>
+                    <span>{job.durationDays} {t("days_req")}</span>
                   </div>
                   <div className="flex items-center gap-2 text-sm font-bold text-[#1B6D24]">
                     <IndianRupee className="w-4 h-4" />
-                    <span>{job.wagePerDay} / day</span>
+                    <span>{job.wagePerDay} {t("per_day")}</span>
                   </div>
                 </div>
                 
@@ -107,17 +109,17 @@ export default function Home() {
                     <button 
                       onClick={() => handleAcceptJob(job.id)}
                       className="w-full bg-gradient-to-r from-[#000666] to-[#1A237E] text-white shadow-[0_4px_12px_rgba(26,35,126,0.2)] py-2.5 rounded-[8px] font-medium hover:shadow-lg transition-all active:scale-[0.98] mt-auto">
-                      Accept Job
+                      {t("accept_job")}
                     </button>
                   ) : (
                     <Link href={`/jobs/${job.id}`} className="w-full bg-white border-2 border-[#1A237E] text-[#1A237E] flex items-center justify-center py-2.5 rounded-[8px] font-medium hover:shadow-sm transition-all active:scale-[0.98] mt-auto">
-                      Review Details
+                      {t("review_details")}
                     </Link>
                   )
                 ) : (
                   <button disabled className="w-full bg-[#e8e8ea] text-[#454652] py-2.5 rounded-[8px] font-medium flex items-center justify-center gap-2 cursor-not-allowed mt-auto border border-[#d9dadc]">
                     <CheckCircle2 className="w-4 h-4 text-[#1B6D24]" />
-                    Accepted
+                    {t("accepted")}
                   </button>
                 )}
               </div>
@@ -128,8 +130,8 @@ export default function Home() {
         {/* Government Schemes Section */}
         <section>
           <div className="flex justify-between items-end mb-4 px-1">
-            <h3 className="text-lg font-bold text-[#343d96]">Government Benefits</h3>
-            <Link href="/schemes" className="text-sm font-semibold text-[#1B6D24] cursor-pointer hover:underline">View All</Link>
+            <h3 className="text-lg font-bold text-[#343d96]">{t("government_benefits")}</h3>
+            <Link href="/schemes" className="text-sm font-semibold text-[#1B6D24] cursor-pointer hover:underline">{t("view_all")}</Link>
           </div>
           
           <div className="space-y-4">
@@ -143,12 +145,12 @@ export default function Home() {
                   <p className="text-sm text-[#454652] font-medium mt-0.5 truncate">{scheme.benefit}</p>
                   {scheme.isEligible && (
                     <div className="inline-block mt-2 bg-[#f0f0f2] text-[#454652] text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded">
-                      Eligible
+                      {t("eligible")}
                     </div>
                   )}
                 </div>
                 <Link href="/schemes" className="flex items-center gap-1 text-[#1A237E] font-bold bg-[#e0e0ff] px-3 py-2 rounded-[8px] active:scale-95 transition-transform shrink-0">
-                  Select
+                  {t("apply")}
                   <ChevronRight className="w-4 h-4" />
                 </Link>
               </div>

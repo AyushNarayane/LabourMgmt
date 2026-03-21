@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import BottomNav from "@/components/BottomNav";
+import { LangProvider, LangToggle } from "@/components/LangProvider";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -21,8 +22,11 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${inter.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col font-sans">
-        {children}
-        <BottomNav />
+        <LangProvider>
+          <LangToggle />
+          {children}
+          <BottomNav />
+        </LangProvider>
       </body>
     </html>
   );
