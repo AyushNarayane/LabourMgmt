@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { UserRound, Building2, ArrowRight, ShieldCheck, CheckCircle2, Mail, Phone, Eye, EyeOff, Loader2 } from "lucide-react";
-import { SKILL_OPTIONS, LANGUAGE_OPTIONS, STATE_OPTIONS } from "@/lib/mockData";
+import { SKILL_OPTIONS, LANGUAGE_OPTIONS, STATE_OPTIONS, DISTRICTS_BY_STATE } from "@/lib/mockData";
 import { useAuth } from "@/components/AuthProvider";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -57,6 +57,8 @@ export default function RegisterPage() {
     businessName: "",
     aadhaarLast4: "",
   });
+
+  const availableDistricts = formData.state ? DISTRICTS_BY_STATE[formData.state] || [] : [];
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -509,13 +511,15 @@ export default function RegisterPage() {
                 </div>
                 <div>
                   <label className="text-xs font-bold text-[#767683] uppercase tracking-wider mb-1.5 block">District</label>
-                  <input
-                    type="text"
-                    placeholder="District"
+                  <select
                     value={formData.district}
                     onChange={(e) => setFormData(p => ({...p, district: e.target.value}))}
-                    className="w-full bg-[#e8e8ea] rounded-xl px-4 py-3 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#1A237E] transition-all"
-                  />
+                    className="w-full bg-[#e8e8ea] rounded-xl px-4 py-3 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#1A237E] transition-all appearance-none"
+                    disabled={!formData.state}
+                  >
+                    <option value="">Select District</option>
+                    {availableDistricts.map(d => <option key={d} value={d}>{d}</option>)}
+                  </select>
                 </div>
               </div>
 
