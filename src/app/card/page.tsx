@@ -11,6 +11,11 @@ import { useRouter } from "next/navigation";
 export default function DigitalCardPage() {
   const { user, userProfile, loading: authLoading } = useAuth();
   const router = useRouter();
+  const [mounted, setMounted] = React.useState(false);
+
+  React.useEffect(() => {
+    setMounted(true);
+  }, []);
 
   React.useEffect(() => {
     if (authLoading) return;
@@ -152,13 +157,17 @@ export default function DigitalCardPage() {
                </div>
 
                <div className="flex flex-col items-center gap-2 mb-[-4px]">
-                  <div className="bg-white p-2.5 rounded-[12px] shadow-[0_8px_24px_rgba(0,0,0,0.08)] border border-[#eeeeee]">
-                    <QRCodeSVG 
-                      value={cardUrl} 
-                      size={90} 
-                      level="H"
-                      includeMargin={false}
-                    />
+                  <div className="bg-white p-2.5 rounded-[12px] shadow-[0_8px_24px_rgba(0,0,0,0.08)] border border-[#eeeeee] min-w-[110px] min-h-[110px] flex items-center justify-center">
+                    {mounted ? (
+                      <QRCodeSVG 
+                        value={cardUrl} 
+                        size={90} 
+                        level="H"
+                        includeMargin={false}
+                      />
+                    ) : (
+                      <div className="w-[90px] h-[90px] bg-slate-50 animate-pulse rounded"></div>
+                    )}
                   </div>
                   <p className="text-[8px] font-black text-[#1a237e] uppercase tracking-[0.2em]">Scan to verify</p>
                </div>

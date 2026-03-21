@@ -20,8 +20,6 @@ export default function EmployerDashboard() {
     if (authLoading) return;
     if (!user) {
       router.push("/register?role=employer");
-    } else if (userProfile && userProfile.role === "worker") {
-      router.push("/worker");
     }
   }, [user, userProfile, authLoading, router]);
 
@@ -155,6 +153,10 @@ export default function EmployerDashboard() {
           </div>
         </div>
 
+        {/* Restore Switch View Link for easier testing */}
+        <Link href="/" className="block text-center text-sm font-semibold text-[#3B4F8C] hover:underline mt-8">
+          ← Switch to Worker View
+        </Link>
       </main>
     </div>
   );

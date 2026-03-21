@@ -15,8 +15,13 @@ import { useRouter } from "next/navigation";
 export default function Home() {
   const [jobs, setJobs] = useState<Job[]>([]);
   const [loadingJobs, setLoadingJobs] = useState(true);
+  const [mounted, setMounted] = useState(false);
   
   const worker = mockWorker; // Fallback structure
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
   const { t } = useLang();
   const { user, userProfile, signOut, loading: authLoading } = useAuth();
   const router = useRouter();
@@ -26,8 +31,6 @@ export default function Home() {
     if (authLoading) return;
     if (!user) {
       router.push("/register?role=worker");
-    } else if (userProfile && userProfile.role === "employer") {
-      router.push("/employer");
     }
   }, [user, userProfile, authLoading, router]);
 
@@ -136,12 +139,16 @@ export default function Home() {
                    XXXX {worker.aadhaarLast4 || "####"}
                  </p>
               </div>
-              <div className="bg-white p-1 rounded-[10px] border border-[#000666]/10 shadow-sm">
-                 <QRCodeSVG 
-                    value={typeof window !== 'undefined' ? `${window.location.host}/verify/${user?.uid || worker.id}` : ''} 
-                    size={42} 
-                 />
-              </div>
+               <div className="bg-white p-1 rounded-[10px] border border-[#000666]/10 shadow-sm min-w-[50px] min-h-[50px] flex items-center justify-center">
+                  {mounted ? (
+                    <QRCodeSVG 
+                       value={typeof window !== 'undefined' ? `${window.location.host}/verify/${user?.uid || worker.id}` : ''} 
+                       size={42} 
+                    />
+                  ) : (
+                    <div className="w-[42px] h-[42px] bg-slate-50 animate-pulse rounded" />
+                  )}
+               </div>
             </div>
 
             {isAadhaarVerified && (
