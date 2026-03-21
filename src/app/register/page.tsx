@@ -10,7 +10,15 @@ import { useRouter, useSearchParams } from "next/navigation";
 type Step = "role" | "auth" | "profile" | "done";
 type AuthMethod = "email" | "phone" | null;
 
-export default function RegisterPage() {
+export default function RegisterWrapper() {
+  return (
+    <React.Suspense fallback={<div className="min-h-screen flex items-center justify-center bg-[#e5e7eb]"><div className="w-full max-w-md bg-[#f3f3f5] min-h-screen shadow-2xl flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-[#000666]" /></div></div>}>
+      <RegisterPage />
+    </React.Suspense>
+  );
+}
+
+function RegisterPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   
