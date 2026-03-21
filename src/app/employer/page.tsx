@@ -17,10 +17,13 @@ export default function EmployerDashboard() {
   const router = useRouter();
 
   React.useEffect(() => {
-    if (!authLoading && !user) {
+    if (authLoading) return;
+    if (!user) {
       router.push("/register?role=employer");
+    } else if (userProfile && userProfile.role === "worker") {
+      router.push("/worker");
     }
-  }, [user, authLoading, router]);
+  }, [user, userProfile, authLoading, router]);
 
   // Fallback if not logged in
   const employer = {
@@ -127,10 +130,6 @@ export default function EmployerDashboard() {
           </div>
         </div>
 
-        {/* Switch to Worker View */}
-        <Link href="/" className="block text-center text-sm font-semibold text-[#1A237E] hover:underline mt-4">
-          ← Switch to Worker View
-        </Link>
       </main>
     </div>
   );

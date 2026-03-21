@@ -20,12 +20,15 @@ export default function Home() {
   const { user, userProfile, signOut, loading: authLoading } = useAuth();
   const router = useRouter();
 
-  // Redirect if not logged in
+  // Redirect if not logged in or wrong role
   useEffect(() => {
-    if (!authLoading && !user) {
+    if (authLoading) return;
+    if (!user) {
       router.push("/register?role=worker");
+    } else if (userProfile && userProfile.role === "employer") {
+      router.push("/employer");
     }
-  }, [user, authLoading, router]);
+  }, [user, userProfile, authLoading, router]);
 
   // Construct worker display data
   const displayName = userProfile?.name || user?.displayName || worker.name;

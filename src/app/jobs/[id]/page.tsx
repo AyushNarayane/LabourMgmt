@@ -14,7 +14,7 @@ import { useLang } from "@/components/LangProvider";
 
 export default function JobDetailsPage({ params }: { params: Promise<{ id: string }> }) {
   const resolvedParams = use(params);
-  const { user, loading: authLoading } = useAuth();
+  const { user, userProfile, loading: authLoading } = useAuth();
   const router = useRouter();
 
   const [job, setJob] = useState<Job | null>(null);
@@ -23,10 +23,13 @@ export default function JobDetailsPage({ params }: { params: Promise<{ id: strin
   const { t } = useLang();
 
   React.useEffect(() => {
-    if (!authLoading && !user) {
+    if (authLoading) return;
+    if (!user) {
       router.push("/register?role=worker");
+    } else if (userProfile && userProfile.role === "employer") {
+      router.push("/employer");
     }
-  }, [user, authLoading, router]);
+  }, [user, userProfile, authLoading, router]);
 
   React.useEffect(() => {
     async function fetchJob() {

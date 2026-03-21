@@ -15,10 +15,13 @@ export default function PostJobPage() {
   const router = useRouter();
 
   React.useEffect(() => {
-    if (!authLoading && !user) {
+    if (authLoading) return;
+    if (!user) {
       router.push("/register?role=employer");
+    } else if (userProfile && userProfile.role === "worker") {
+      router.push("/worker");
     }
-  }, [user, authLoading, router]);
+  }, [user, userProfile, authLoading, router]);
   
   const [form, setForm] = useState({
     title: "",

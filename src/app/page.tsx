@@ -8,7 +8,7 @@ import { useUser } from "@/components/UserProvider";
 
 export default function Home() {
   const { t } = useLang();
-  const { user } = useUser();
+  const { user, userProfile } = useAuth();
 
   return (
     <div className="bg-[#f9f9fb] min-h-screen text-[#1a1c1d] font-sans flex flex-col">
@@ -34,47 +34,51 @@ export default function Home() {
 
       {/* Action Cards (Pulled up to overlap hero) */}
       <section className="px-5 -mt-16 sm:-mt-24 pb-20 relative z-10">
-        <div className="max-w-4xl mx-auto grid md:grid-cols-2 gap-6">
-
+        <div className={`max-w-4xl mx-auto grid gap-6 ${user && userProfile ? "max-w-md" : "md:grid-cols-2"}`}>
+          
           {/* Worker Card */}
-          <Link
-            href={user ? "/" : "/register?role=worker"}
-            className="group block bg-white rounded-3xl p-8 md:p-10 shadow-[0_12px_40px_rgba(26,35,126,0.08)] border border-[#eeeef0] transition-all hover:-translate-y-1 hover:shadow-[0_20px_48px_rgba(26,35,126,0.12)]"
-          >
-            <div className="w-16 h-16 rounded-2xl bg-[#e0e0ff] flex items-center justify-center mb-6">
-              <UserRound className="w-8 h-8 text-[#1A237E]" />
-            </div>
-            <h2 className="text-2xl font-bold text-[#1A237E] mb-3 group-hover:text-[#000666] transition-colors">
-              I am a Job Seeker
-            </h2>
-            <p className="text-[#454652] mb-8 leading-relaxed">
-              Find fair-wage jobs near you, access government benefits, and build your digital, verified labor identity.
-            </p>
-            <div className="flex items-center gap-2 text-[#1A237E] font-bold">
-              <span>{user ? "Enter Worker Portal" : "Join as a Worker"}</span>
-              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-            </div>
-          </Link>
+          {(!user || userProfile?.role === "worker") && (
+            <Link
+              href={user ? "/worker" : "/register?role=worker"}
+              className="group block bg-white rounded-3xl p-8 md:p-10 shadow-[0_12px_40px_rgba(26,35,126,0.08)] border border-[#eeeef0] transition-all hover:-translate-y-1 hover:shadow-[0_20px_48px_rgba(26,35,126,0.12)]"
+            >
+              <div className="w-16 h-16 rounded-2xl bg-[#e0e0ff] flex items-center justify-center mb-6">
+                <UserRound className="w-8 h-8 text-[#1A237E]" />
+              </div>
+              <h2 className="text-2xl font-bold text-[#1A237E] mb-3 group-hover:text-[#000666] transition-colors">
+                I am a Job Seeker
+              </h2>
+              <p className="text-[#454652] mb-8 leading-relaxed">
+                Find fair-wage jobs near you, access government benefits, and build your digital, verified labor identity.
+              </p>
+              <div className="flex items-center gap-2 text-[#1A237E] font-bold">
+                <span>{user ? "Enter Worker Portal" : "Join as a Worker"}</span>
+                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              </div>
+            </Link>
+          )}
 
           {/* Employer Card */}
-          <Link
-            href="/employer"
-            className="group block bg-white rounded-3xl p-8 md:p-10 shadow-[0_12px_40px_rgba(26,35,126,0.08)] border border-[#eeeef0] transition-all hover:-translate-y-1 hover:shadow-[0_20px_48px_rgba(26,35,126,0.12)]"
-          >
-            <div className="w-16 h-16 rounded-2xl bg-[#a0f399]/30 flex items-center justify-center mb-6">
-              <Building2 className="w-8 h-8 text-[#1B6D24]" />
-            </div>
-            <h2 className="text-2xl font-bold text-[#1B6D24] mb-3 group-hover:text-[#005312] transition-colors">
-              I am an Employer
-            </h2>
-            <p className="text-[#454652] mb-8 leading-relaxed">
-              Post jobs, find skilled and verified local labor instantly, and manage your workforce with full compliance.
-            </p>
-            <div className="flex items-center gap-2 text-[#1B6D24] font-bold">
-              <span>{user ? "Enter Employer Portal" : "Join as an Employer"}</span>
-              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-            </div>
-          </Link>
+          {(!user || userProfile?.role === "employer") && (
+            <Link
+              href={user ? "/employer" : "/register?role=employer"}
+              className="group block bg-white rounded-3xl p-8 md:p-10 shadow-[0_12px_40px_rgba(26,35,126,0.08)] border border-[#eeeef0] transition-all hover:-translate-y-1 hover:shadow-[0_20px_48px_rgba(26,35,126,0.12)]"
+            >
+              <div className="w-16 h-16 rounded-2xl bg-[#a0f399]/30 flex items-center justify-center mb-6">
+                <Building2 className="w-8 h-8 text-[#1B6D24]" />
+              </div>
+              <h2 className="text-2xl font-bold text-[#1B6D24] mb-3 group-hover:text-[#005312] transition-colors">
+                I am an Employer
+              </h2>
+              <p className="text-[#454652] mb-8 leading-relaxed">
+                Post jobs, find skilled and verified local labor instantly, and manage your workforce with full compliance.
+              </p>
+              <div className="flex items-center gap-2 text-[#1B6D24] font-bold">
+                <span>{user ? "Enter Employer Portal" : "Join as an Employer"}</span>
+                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              </div>
+            </Link>
+          )}
 
         </div>
       </section>
