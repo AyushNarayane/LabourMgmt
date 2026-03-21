@@ -2,12 +2,60 @@
 
 import React from "react";
 import { Briefcase, Users, AlertTriangle, TrendingUp, Plus, Star, MapPin } from "lucide-react";
-import { mockEmployer, mockJobs } from "@/lib/mockData";
+import { mockEmployer, Job } from "@/lib/mockData";
 import Link from "next/link";
+import { collection, query, where, getDocs, orderBy, limit } from "firebase/firestore";
+import { db } from "@/lib/firebase";
+import { useAuth } from "@/components/AuthProvider";
+
+import { useRouter } from "next/navigation";
 
 export default function EmployerDashboard() {
-  const employer = mockEmployer;
-  const postedJobs = mockJobs.filter(j => j.employerId === employer.id);
+  const { user, userProfile, loading: authLoading } = useAuth();
+  const [postedJobs, setPostedJobs] = React.useState<Job[]>([]);
+  const [loading, setLoading] = React.useState(true);
+  const router = useRouter();
+
+  React.useEffect(() => {
+    if (!authLoading && !user) {
+      router.push("/register?role=employer");
+    }
+  }, [user, authLoading, router]);
+
+  // Fallback if not logged in
+  const employer = {
+    ...mockEmployer,
+    businessName: userProfile?.businessName || userProfile?.name || mockEmployer.businessName,
+    location: userProfile?.district && userProfile?.state 
+      ? `${userProfile.district}, ${userProfile.state.substring(0,2).toUpperCase()}` 
+      : mockEmployer.location,
+    contactPerson: userProfile?.name || mockEmployer.contactPerson,
+  };
+
+  React.useEffect(() => {
+    async function fetchEmployerJobs() {
+      if (!user) {
+        setLoading(false);
+        return;
+      }
+      try {
+        const jobsRef = collection(db, "jobs");
+        const q = query(
+          jobsRef, 
+          where("employerId", "==", user.uid)
+        );
+        const snapshot = await getDocs(q);
+        const fbJobs: Job[] = [];
+        snapshot.forEach((doc) => fbJobs.push({ id: doc.id, ...doc.data() } as Job));
+        setPostedJobs(fbJobs);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchEmployerJobs();
+  }, [user]);
 
   return (
     <div className="bg-[#f3f3f5] min-h-screen text-[#1a1c1d] pb-24 font-sans">
@@ -23,7 +71,7 @@ export default function EmployerDashboard() {
         <div className="grid grid-cols-2 gap-3">
           <div className="bg-white rounded-xl shadow-[0_4px_16px_rgba(0,0,0,0.04)] p-5 border border-[#eeeef0]">
             <Briefcase className="w-6 h-6 text-[#1A237E] mb-3" />
-            <p className="text-3xl font-bold text-[#1a1c1d]">{employer.jobsPosted}</p>
+            <p className="text-3xl font-bold text-[#1a1c1d]">{loading ? "-" : postedJobs.length}</p>
             <p className="text-xs font-bold text-[#767683] uppercase tracking-wider mt-1">Jobs Posted</p>
           </div>
           <div className="bg-white rounded-xl shadow-[0_4px_16px_rgba(0,0,0,0.04)] p-5 border border-[#eeeef0]">

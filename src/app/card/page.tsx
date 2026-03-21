@@ -5,9 +5,34 @@ import { Star, ShieldCheck, MapPin, Briefcase, Phone, Calendar, ArrowLeft, Share
 import { mockWorker } from "@/lib/mockData";
 import Link from "next/link";
 import { QRCodeSVG } from "qrcode.react";
+import { useAuth } from "@/components/AuthProvider";
+
+import { useRouter } from "next/navigation";
 
 export default function DigitalCardPage() {
-  const worker = mockWorker;
+  const { user, userProfile, loading: authLoading } = useAuth();
+  const router = useRouter();
+
+  React.useEffect(() => {
+    if (!authLoading && !user) {
+      router.push("/register?role=worker");
+    }
+  }, [user, authLoading, router]);
+
+  const worker = mockWorker; // fallback
+
+  const displayName = userProfile?.name || user?.displayName || worker.name;
+  const displayRole = userProfile?.skills?.[0] || worker.role;
+  const displayLocation = userProfile?.district && userProfile?.state 
+    ? `${userProfile.district}, ${userProfile.state.substring(0,2).toUpperCase()}` 
+    : worker.location;
+    
+  const displayPhone = userProfile?.phone || user?.phoneNumber || worker.phone;
+  const isAadhaarVerified = userProfile?.isAadhaarVerified || worker.isAadhaarVerified;
+  const aadhaarLast4 = userProfile?.aadhaarLast4 || worker.aadhaarLast4;
+  const skills = userProfile?.skills || worker.skills;
+  const languages = userProfile?.languages || worker.languages;
+
   const cardUrl = typeof window !== 'undefined' ? `${window.location.origin}/card` : '';
 
   return (
@@ -34,10 +59,10 @@ export default function DigitalCardPage() {
           <div className="bg-gradient-to-r from-[#000666] to-[#1A237E] p-5 flex justify-between items-center">
             <div>
               <p className="text-[#bdc2ff] text-[10px] font-bold uppercase tracking-[0.15em]">SHRAMIK SETU — DIGITAL LABOUR CARD</p>
-              <p className="text-white text-lg font-bold mt-1">{worker.name}</p>
+              <p className="text-white text-lg font-bold mt-1">{displayName}</p>
             </div>
             <div className="bg-white p-2 rounded-lg">
-              <QRCodeSVG value={cardUrl || worker.id} size={56} />
+              <QRCodeSVG value={cardUrl || user?.uid || worker.id} size={56} />
             </div>
           </div>
 
@@ -46,12 +71,12 @@ export default function DigitalCardPage() {
             <div className="grid grid-cols-2 gap-y-5 gap-x-4">
               <div>
                 <p className="text-[10px] font-bold text-[#767683] uppercase tracking-[0.1em] mb-1">Role</p>
-                <p className="font-bold text-[#1a1c1d]">{worker.role}</p>
+                <p className="font-bold text-[#1a1c1d]">{displayRole}</p>
               </div>
               <div>
                 <p className="text-[10px] font-bold text-[#767683] uppercase tracking-[0.1em] mb-1">Location</p>
                 <p className="font-bold text-[#1a1c1d] flex items-center gap-1">
-                  <MapPin className="w-3.5 h-3.5 text-[#767683]" /> {worker.location}
+                  <MapPin className="w-3.5 h-3.5 text-[#767683]" /> {displayLocation}
                 </p>
               </div>
               <div>
@@ -70,37 +95,41 @@ export default function DigitalCardPage() {
               <div>
                 <p className="text-[10px] font-bold text-[#767683] uppercase tracking-[0.1em] mb-1">Phone</p>
                 <p className="font-bold text-[#1a1c1d] flex items-center gap-1">
-                  <Phone className="w-3.5 h-3.5 text-[#767683]" /> {worker.phone}
+                  <Phone className="w-3.5 h-3.5 text-[#767683]" /> {displayPhone || "N/A"}
                 </p>
               </div>
               <div>
                 <p className="text-[10px] font-bold text-[#767683] uppercase tracking-[0.1em] mb-1">Aadhaar</p>
-                <p className="font-bold text-[#1a1c1d]">XXXX XXXX {worker.aadhaarLast4}</p>
+                <p className="font-bold text-[#1a1c1d]">{aadhaarLast4 ? `XXXX XXXX ${aadhaarLast4}` : "Not Linked"}</p>
               </div>
             </div>
 
             {/* Skills */}
-            <div>
-              <p className="text-[10px] font-bold text-[#767683] uppercase tracking-[0.1em] mb-2">Skills</p>
-              <div className="flex flex-wrap gap-2">
-                {worker.skills.map(skill => (
-                  <span key={skill} className="bg-[#e0e0ff] text-[#000666] text-xs font-bold px-3 py-1.5 rounded-lg">{skill}</span>
-                ))}
+            {skills?.length > 0 && (
+              <div>
+                <p className="text-[10px] font-bold text-[#767683] uppercase tracking-[0.1em] mb-2">Skills</p>
+                <div className="flex flex-wrap gap-2">
+                  {skills.map(skill => (
+                    <span key={skill} className="bg-[#e0e0ff] text-[#000666] text-xs font-bold px-3 py-1.5 rounded-lg">{skill}</span>
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
 
             {/* Languages */}
-            <div>
-              <p className="text-[10px] font-bold text-[#767683] uppercase tracking-[0.1em] mb-2">Languages</p>
-              <div className="flex flex-wrap gap-2">
-                {worker.languages.map(lang => (
-                  <span key={lang} className="bg-[#f0f0f2] text-[#454652] text-xs font-bold px-3 py-1.5 rounded-lg">{lang}</span>
-                ))}
+            {languages?.length > 0 && (
+              <div>
+                <p className="text-[10px] font-bold text-[#767683] uppercase tracking-[0.1em] mb-2">Languages</p>
+                <div className="flex flex-wrap gap-2">
+                  {languages.map(lang => (
+                    <span key={lang} className="bg-[#f0f0f2] text-[#454652] text-xs font-bold px-3 py-1.5 rounded-lg">{lang}</span>
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
 
             {/* Verification Badge */}
-            {worker.isAadhaarVerified && (
+            {isAadhaarVerified && (
               <div className="flex items-center gap-3 bg-[#a0f399]/20 text-[#005312] p-3 rounded-xl border border-[#a0f399]">
                 <div className="bg-[#1B6D24] rounded-full p-1.5 shadow-sm">
                   <ShieldCheck className="w-5 h-5 text-white" />

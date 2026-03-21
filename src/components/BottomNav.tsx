@@ -6,7 +6,7 @@ import { Home, CreditCard, Briefcase, BookOpen, UserRound } from "lucide-react";
 import { usePathname } from "next/navigation";
 
 const navItems = [
-  { label: "Home", icon: Home, href: "/" },
+  { label: "Home", icon: Home, href: "/worker" },
   { label: "Card", icon: CreditCard, href: "/card" },
   { label: "Jobs", icon: Briefcase, href: "/jobs" },
   { label: "Schemes", icon: BookOpen, href: "/schemes" },
@@ -16,8 +16,8 @@ const navItems = [
 export default function BottomNav() {
   const pathname = usePathname();
 
-  // Don't show on employer pages or register
-  if (pathname.startsWith("/employer") || pathname === "/register") return null;
+  // Don't show on landing page, employer pages, or register
+  if (pathname === "/" || pathname.startsWith("/employer") || pathname === "/register") return null;
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-xl border-t border-[#eeeef0] z-50 px-2 pb-1 pt-1.5 shadow-[0_-4px_12px_rgba(0,0,0,0.04)]">

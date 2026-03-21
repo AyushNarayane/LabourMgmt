@@ -104,11 +104,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return () => unsubscribe();
   }, []);
 
+  // Helper to remove undefined fields for Firestore
+  const stripUndefined = (obj: any) => 
+    Object.fromEntries(Object.entries(obj).filter(([_, v]) => v !== undefined));
+
   // Save or update profile in Firestore
   const saveProfile = async (data: Partial<UserProfile>) => {
     if (!user) throw new Error("No user logged in");
     const profileRef = doc(db, "users", user.uid);
-    await setDoc(profileRef, { ...data, uid: user.uid }, { merge: true });
+    const cleanData = stripUndefined({ ...data, uid: user.uid });
+    await setDoc(profileRef, cleanData, { merge: true });
     // Re-fetch
     const profileDoc = await getDoc(profileRef);
     if (profileDoc.exists()) {
@@ -130,7 +135,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       await updateProfile(cred.user, { displayName: name });
 
       // Save profile to Firestore
-      const profile: UserProfile = {
+      const profile: UserProfile = stripUndefined({
         uid: cred.user.uid,
         name,
         email,
@@ -138,7 +143,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         isAadhaarVerified: false,
         createdAt: serverTimestamp(),
         ...profileData,
-      };
+      }) as UserProfile;
       await setDoc(doc(db, "users", cred.user.uid), profile);
       setUserProfile(profile);
     } catch (err: unknown) {
@@ -171,14 +176,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const profileRef = doc(db, "users", u.uid);
       const profileDoc = await getDoc(profileRef);
       if (!profileDoc.exists()) {
-        const profile: UserProfile = {
+        const profile: UserProfile = stripUndefined({
           uid: u.uid,
           name: u.displayName || "User",
           email: u.email || undefined,
           role,
           isAadhaarVerified: false,
           createdAt: serverTimestamp(),
-        };
+        }) as UserProfile;
         await setDoc(profileRef, profile);
         setUserProfile(profile);
       } else {
@@ -225,7 +230,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const profileRef = doc(db, "users", u.uid);
       const profileDoc = await getDoc(profileRef);
       if (!profileDoc.exists()) {
-        const profile: UserProfile = {
+        const profile: UserProfile = stripUndefined({
           uid: u.uid,
           name: profileData?.name || "Worker",
           phone: u.phoneNumber || undefined,
@@ -233,7 +238,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           isAadhaarVerified: false,
           createdAt: serverTimestamp(),
           ...profileData,
-        };
+        }) as UserProfile;
         await setDoc(profileRef, profile);
         setUserProfile(profile);
       } else {

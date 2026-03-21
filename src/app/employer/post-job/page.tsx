@@ -4,8 +4,22 @@ import React, { useState } from "react";
 import { ArrowLeft, AlertTriangle, CheckCircle2, IndianRupee, ShieldCheck } from "lucide-react";
 import { SKILL_OPTIONS, STATE_OPTIONS, checkWageFairness } from "@/lib/mockData";
 import Link from "next/link";
+import { collection, addDoc, serverTimestamp } from "firebase/firestore";
+import { db } from "@/lib/firebase";
+import { useAuth } from "@/components/AuthProvider";
+
+import { useRouter } from "next/navigation";
 
 export default function PostJobPage() {
+  const { user, userProfile, loading: authLoading } = useAuth();
+  const router = useRouter();
+
+  React.useEffect(() => {
+    if (!authLoading && !user) {
+      router.push("/register?role=employer");
+    }
+  }, [user, authLoading, router]);
+  
   const [form, setForm] = useState({
     title: "",
     description: "",
@@ -24,6 +38,7 @@ export default function PostJobPage() {
 
   const [acknowledged, setAcknowledged] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleWageBlur = () => {
     if (form.state && form.skill && form.wagePerDay) {
@@ -33,10 +48,35 @@ export default function PostJobPage() {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (wageFeedback && !wageFeedback.isFair && !acknowledged) return;
-    setSubmitted(true);
+    
+    setIsSubmitting(true);
+    try {
+      await addDoc(collection(db, "jobs"), {
+        title: form.title,
+        description: form.description,
+        skillsRequired: [form.skill],
+        state: form.state,
+        location: form.location || form.state,
+        durationDays: Number(form.durationDays),
+        wagePerDay: Number(form.wagePerDay),
+        employerId: user?.uid || "mock-employer-id",
+        company: userProfile?.businessName || userProfile?.name || "Company",
+        matchScore: Math.floor(Math.random() * 30) + 60, // random score 60-90 for demo
+        status: "open",
+        wageFairnessStatus: wageFeedback?.isFair ? "verified" : "flagged",
+        distanceKm: Math.floor(Math.random() * 15) + 1, // random distance 1-15km
+        createdAt: serverTimestamp(),
+      });
+      setSubmitted(true);
+    } catch (err) {
+      console.error("Error adding document: ", err);
+      alert("Failed to post job");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   if (submitted) {
@@ -218,10 +258,10 @@ export default function PostJobPage() {
           {/* Submit */}
           <button
             type="submit"
-            disabled={!form.title || !form.skill || !form.state || !form.wagePerDay || !form.durationDays || (wageFeedback !== null && !wageFeedback.isFair && !acknowledged)}
+            disabled={!form.title || !form.skill || !form.state || !form.wagePerDay || !form.durationDays || (wageFeedback !== null && !wageFeedback.isFair && !acknowledged) || isSubmitting}
             className="w-full bg-gradient-to-r from-[#000666] to-[#1A237E] text-white py-4 rounded-xl font-bold text-lg shadow-lg active:scale-95 transition-transform disabled:opacity-40"
           >
-            Post Job
+            {isSubmitting ? "Posting..." : "Post Job"}
           </button>
         </form>
       </main>

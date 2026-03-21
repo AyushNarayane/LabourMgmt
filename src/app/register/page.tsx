@@ -1,19 +1,24 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { UserRound, Building2, ArrowRight, ShieldCheck, CheckCircle2, Mail, Phone, Eye, EyeOff, Loader2 } from "lucide-react";
 import { SKILL_OPTIONS, LANGUAGE_OPTIONS, STATE_OPTIONS } from "@/lib/mockData";
 import { useAuth } from "@/components/AuthProvider";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 type Step = "role" | "auth" | "profile" | "done";
 type AuthMethod = "email" | "phone" | null;
 
 export default function RegisterPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  
+  const initialRole = (searchParams.get("role") as "worker" | "employer") || null;
+  const initialLogin = searchParams.get("login") === "true";
   const {
     user,
+    userProfile,
     signUpWithEmail,
     signInWithEmail,
     signInWithGoogle,
@@ -25,10 +30,10 @@ export default function RegisterPage() {
     loading: authLoading,
   } = useAuth();
 
-  const [step, setStep] = useState<Step>("role");
-  const [role, setRole] = useState<"worker" | "employer" | null>(null);
+  const [step, setStep] = useState<Step>(initialRole ? "auth" : "role");
+  const [role, setRole] = useState<"worker" | "employer" | null>(initialRole);
   const [authMethod, setAuthMethod] = useState<AuthMethod>(null);
-  const [isLogin, setIsLogin] = useState(false);
+  const [isLogin, setIsLogin] = useState(initialLogin);
 
   // Email fields
   const [email, setEmail] = useState("");
@@ -55,6 +60,13 @@ export default function RegisterPage() {
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  // Auto-redirect upon successful login
+  useEffect(() => {
+    if (userProfile && isLogin) {
+      router.push(userProfile.role === "worker" ? "/worker" : "/employer");
+    }
+  }, [userProfile, isLogin, router]);
+
   // ------ EMAIL SIGN UP / SIGN IN ------
   const handleEmailAuth = async () => {
     if (!email || !password) return;
@@ -63,7 +75,7 @@ export default function RegisterPage() {
     try {
       if (isLogin) {
         await signInWithEmail(email, password);
-        router.push("/");
+        // routing is handled by the useEffect watching userProfile!
       } else {
         await signUpWithEmail(email, password, formData.name || email.split("@")[0], role!, {
           state: formData.state,
@@ -131,18 +143,24 @@ export default function RegisterPage() {
   const handleCompleteProfile = async () => {
     setIsSubmitting(true);
     try {
-      await saveProfile({
+      const payload: any = {
         name: formData.name || user?.displayName || "User",
         role: role!,
         state: formData.state,
         district: formData.district,
-        phone: formData.phone || user?.phoneNumber || undefined,
-        skills: role === "worker" ? formData.skills : undefined,
-        languages: role === "worker" ? formData.languages : undefined,
-        businessName: role === "employer" ? formData.businessName : undefined,
         isAadhaarVerified: formData.aadhaarLast4.length === 4,
-        aadhaarLast4: formData.aadhaarLast4 || undefined,
-      });
+      };
+
+      if (formData.phone || user?.phoneNumber) payload.phone = formData.phone || user?.phoneNumber;
+      if (role === "worker") {
+        payload.skills = formData.skills;
+        payload.languages = formData.languages;
+      } else {
+        payload.businessName = formData.businessName;
+      }
+      if (formData.aadhaarLast4) payload.aadhaarLast4 = formData.aadhaarLast4;
+
+      await saveProfile(payload);
       setStep("done");
     } catch (err) {
       console.error("Profile save failed:", err);

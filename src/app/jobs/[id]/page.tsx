@@ -2,13 +2,59 @@
 
 import React, { useState, use } from "react";
 import { ArrowLeft, MapPin, IndianRupee, Briefcase, CalendarClock, Building2, CheckCircle2, ShieldCheck, AlertTriangle } from "lucide-react";
-import { mockJobs } from "@/lib/mockData";
+import { mockJobs, Job } from "@/lib/mockData";
 import Link from "next/link";
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "@/lib/firebase";
+
+import { useAuth } from "@/components/AuthProvider";
+import { useRouter } from "next/navigation";
 
 export default function JobDetailsPage({ params }: { params: Promise<{ id: string }> }) {
   const resolvedParams = use(params);
-  const job = mockJobs.find(j => j.id === resolvedParams.id);
+  const { user, loading: authLoading } = useAuth();
+  const router = useRouter();
+
+  const [job, setJob] = useState<Job | null>(null);
+  const [loading, setLoading] = useState(true);
   const [accepted, setAccepted] = useState(false);
+
+  React.useEffect(() => {
+    if (!authLoading && !user) {
+      router.push("/register?role=worker");
+    }
+  }, [user, authLoading, router]);
+
+  React.useEffect(() => {
+    async function fetchJob() {
+      try {
+        const docRef = doc(db, "jobs", resolvedParams.id);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          setJob({ id: docSnap.id, ...docSnap.data() } as Job);
+        } else {
+          // Fallback to mock
+          const mockJ = mockJobs.find(j => j.id === resolvedParams.id);
+          setJob(mockJ || null);
+        }
+      } catch (err) {
+        console.error(err);
+        const mockJ = mockJobs.find(j => j.id === resolvedParams.id);
+        setJob(mockJ || null);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchJob();
+  }, [resolvedParams.id]);
+
+  if (loading) {
+    return (
+      <div className="bg-[#f3f3f5] min-h-screen flex flex-col items-center justify-center text-center px-8 font-sans">
+        <h1 className="text-2xl font-bold text-[#1a1c1d] mb-2">Loading Job...</h1>
+      </div>
+    );
+  }
 
   if (!job) {
     return (
