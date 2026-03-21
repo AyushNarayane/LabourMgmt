@@ -4,9 +4,9 @@ import React from "react";
 import Link from "next/link";
 import { ArrowRight, Building2, UserRound, ShieldCheck, Activity } from "lucide-react";
 import { useLang } from "@/components/LangProvider";
-import { useUser } from "@/components/UserProvider";
+import { useAuth } from "@/components/AuthProvider";
 
-export default function Home() {
+export default function LandingPage() {
   const { t } = useLang();
   const { user, userProfile } = useAuth();
 
@@ -22,11 +22,11 @@ export default function Home() {
             <ShieldCheck className="w-4 h-4" />
             Empowering the Unorganized Workforce
           </div>
-
+          
           <h1 className="text-4xl md:text-5xl lg:text-7xl font-bold tracking-tight text-white mb-6 leading-[1.1]">
             Dignity in Work,<br /> Security in Life
           </h1>
-
+          
           <p className="text-lg md:text-xl text-[#bdc2ff] max-w-2xl mx-auto mb-10 leading-relaxed font-medium">
             Shramik Setu bridges the gap between verified workers, reliable employers, and essential government welfare. A civic platform built on trust.
           </p>
