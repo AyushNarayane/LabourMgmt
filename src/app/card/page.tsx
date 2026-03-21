@@ -14,10 +14,13 @@ export default function DigitalCardPage() {
   const router = useRouter();
 
   React.useEffect(() => {
-    if (!authLoading && !user) {
+    if (authLoading) return;
+    if (!user) {
       router.push("/register?role=worker");
+    } else if (userProfile && userProfile.role === "employer") {
+      router.push("/employer");
     }
-  }, [user, authLoading, router]);
+  }, [user, userProfile, authLoading, router]);
 
   const worker = mockWorker; // fallback
 

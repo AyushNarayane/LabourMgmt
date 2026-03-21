@@ -11,17 +11,20 @@ import { useAuth } from "@/components/AuthProvider";
 import { useRouter } from "next/navigation";
 
 export default function SchemesPage() {
-  const { user, loading: authLoading } = useAuth();
+  const { user, userProfile, loading: authLoading } = useAuth();
   const router = useRouter();
 
   const [schemes, setSchemes] = React.useState<GovernmentScheme[]>([]);
   const [loading, setLoading] = React.useState(true);
 
   React.useEffect(() => {
-    if (!authLoading && !user) {
+    if (authLoading) return;
+    if (!user) {
       router.push("/register?role=worker");
+    } else if (userProfile && userProfile.role === "employer") {
+      router.push("/employer");
     }
-  }, [user, authLoading, router]);
+  }, [user, userProfile, authLoading, router]);
 
   React.useEffect(() => {
     async function fetchSchemes() {

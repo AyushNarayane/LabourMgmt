@@ -15,7 +15,7 @@ export default function RegisterPage() {
   const searchParams = useSearchParams();
   
   const initialRole = (searchParams.get("role") as "worker" | "employer") || null;
-  const initialLogin = searchParams.get("login") === "true";
+  const initialLogin = searchParams.get("login") !== "false";
   const {
     user,
     userProfile,
@@ -263,9 +263,11 @@ export default function RegisterPage() {
         {step === "auth" && (
           <div className="space-y-6">
             {/* Auth Method Chooser */}
-            {!authMethod && !isLogin && (
+            {!authMethod && (
               <div className="space-y-3">
-                <h2 className="text-lg font-bold text-[#343d96] mb-4">Choose sign-up method</h2>
+                <h2 className="text-lg font-bold text-[#343d96] mb-4">
+                  {isLogin ? "Choose sign-in method" : "Choose sign-up method"}
+                </h2>
 
                 <button
                   onClick={() => setAuthMethod("email")}
@@ -307,7 +309,7 @@ export default function RegisterPage() {
             )}
 
             {/* Email/Password Form */}
-            {(authMethod === "email" || isLogin) && (
+            {authMethod === "email" && (
               <div className="bg-white rounded-2xl shadow-[0_4px_16px_rgba(0,0,0,0.04)] p-6 space-y-5">
                 <h3 className="font-bold text-lg text-[#343d96]">{isLogin ? "Sign In" : "Create Account"}</h3>
 
@@ -377,7 +379,7 @@ export default function RegisterPage() {
             )}
 
             {/* Phone OTP Form */}
-            {authMethod === "phone" && !isLogin && (
+            {authMethod === "phone" && (
               <div className="bg-white rounded-2xl shadow-[0_4px_16px_rgba(0,0,0,0.04)] p-6 space-y-5">
                 <div className="flex items-center gap-3 mb-2">
                   <div className="bg-[#a0f399]/30 p-3 rounded-full">
@@ -519,24 +521,26 @@ export default function RegisterPage() {
                 </div>
               </div>
 
-              {/* Aadhaar mock field */}
-              <div>
-                <label className="text-xs font-bold text-[#767683] uppercase tracking-wider mb-1.5 block">Aadhaar Last 4 Digits (optional)</label>
-                <div className="flex items-center gap-2">
-                  <span className="text-[#767683] font-mono">XXXX XXXX</span>
-                  <input
-                    type="text"
-                    maxLength={4}
-                    placeholder="1234"
-                    value={formData.aadhaarLast4}
-                    onChange={(e) => setFormData(p => ({...p, aadhaarLast4: e.target.value.replace(/\D/g, "")}))}
-                    className="w-24 bg-[#e8e8ea] rounded-xl px-4 py-3 text-center font-mono tracking-widest focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#1A237E] transition-all"
-                  />
-                  {formData.aadhaarLast4.length === 4 && (
-                    <ShieldCheck className="w-5 h-5 text-[#1B6D24]" />
-                  )}
+              {/* Aadhaar mock field (Worker Only) */}
+              {role === "worker" && (
+                <div>
+                  <label className="text-xs font-bold text-[#767683] uppercase tracking-wider mb-1.5 block">Aadhaar Last 4 Digits (optional)</label>
+                  <div className="flex items-center gap-2">
+                    <span className="text-[#767683] font-mono">XXXX XXXX</span>
+                    <input
+                      type="text"
+                      maxLength={4}
+                      placeholder="1234"
+                      value={formData.aadhaarLast4}
+                      onChange={(e) => setFormData(p => ({...p, aadhaarLast4: e.target.value.replace(/\D/g, "")}))}
+                      className="w-24 bg-[#e8e8ea] rounded-xl px-4 py-3 text-center font-mono tracking-widest focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#1A237E] transition-all"
+                    />
+                    {formData.aadhaarLast4.length === 4 && (
+                      <ShieldCheck className="w-5 h-5 text-[#1B6D24]" />
+                    )}
+                  </div>
                 </div>
-              </div>
+              )}
 
               {role === "employer" && (
                 <div>
